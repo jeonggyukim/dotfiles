@@ -1,0 +1,5 @@
+[user]
+	email = omyojj@gmail.com
+	name = Jeong-Gyu Kim
+[core]
+	excludesfile = /Users/jgkim/.gitignore_global

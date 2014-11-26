@@ -1,0 +1,45 @@
+#!/bin/bash
+# ~/.bash_aliases
+
+#alias mkdir='mkdir -p'
+#alias rm='rm -i'
+alias cp='cp -i'
+alias mv='mv -i' # Prevents accidentally clobbering files.
+alias ..='cd ..'
+
+alias ls='ls -h'
+# The ubiquitous 'll': directories first, with alphanumeric sorting:
+alias ll="ls -lF" # --group-directories-first"
+alias la='ll -Aa'           #  Show hidden files.
+alias ld='ls -ld */'
+alias l='ls -CF'
+
+alias grep='grep --color=always'
+alias fgrep='fgrep --color=auto'
+alias egrep='egrep --color=auto'
+
+alias path='echo -e ${PATH//:/\\n}'
+alias libpath='echo -e ${LD_LIBRARY_PATH//:/\\n}'
+
+alias e='emacs -nw'
+alias em='emacs'
+alias ems='e ms.tex'
+alias s='ssh'
+alias evince='skim'
+alias ev='evince'
+alias mk='make'
+
+alias eem='emacs -nw ~/.emacs'
+alias ebash='emacs -nw ~/.bash_profile'
+alias sbash='source ~/.bash_profile'
+alias ealias='emacs -nw ~/.bash_aliases'
+alias eidl='emacs -nw ~/.idlstartup.pro'
+
+# emacs readonly mode
+emr() {
+  emacs "$1" --eval '(setq buffer-read-only t)'
+}
+
+er() {
+  emacs -nw "$1" --eval '(setq buffer-read-only t)'
+}
