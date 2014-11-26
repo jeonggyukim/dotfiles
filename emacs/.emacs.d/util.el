@@ -6,8 +6,29 @@
 (defalias 'replace-query-regexp 'query-replace-regexp)
 (defalias 'replace-query-regexp-eval 'query-replace-regexp-eval)
 
+(define-key input-decode-map "\e[1;2D" [S-left])
+(define-key input-decode-map "\e[1;2C" [S-right])
+(define-key input-decode-map "\e[1;2B" [S-down])
+(define-key input-decode-map "\e[1;2A" [S-up])
+(define-key input-decode-map "\e[1;2F" [S-end])
+(define-key input-decode-map "\e[1;2H" [S-home])
+
+(define-key input-decode-map "\e[1;9A" [M-up])
+(define-key input-decode-map "\e[1;9B" [M-down])
+(define-key input-decode-map "\e[1;9C" [M-right])
+(define-key input-decode-map "\e[1;9D" [M-left])
+
+(global-set-key (kbd "C-c <left>")  'windmove-left)
+(global-set-key (kbd "C-c <right>") 'windmove-right)
+(global-set-key (kbd "C-c <up>")    'windmove-up)
+(global-set-key (kbd "C-c <down>")  'windmove-down)
+
 (global-set-key "\M-n" "\C-u1\C-v")
 (global-set-key "\M-p" "\C-u1\M-v")
+
+;(global-set-key (kbd "<M-down>")  'forward-paragraph)
+;(global-set-key (kbd "<M-up>")  'backward-paragraph)
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; custom functions
@@ -99,6 +120,34 @@
   (setq this-command 'quick-cut-line))
 
 ;(global-set-key [f6] 'quick-cut-line)
+
+(defun move-text-internal (arg)
+  (cond
+   ((and mark-active transient-mark-mode)
+    (if (> (point) (mark))
+        (exchange-point-and-mark))
+    (let ((column (current-column))
+          (text (delete-and-extract-region (point) (mark))))
+      (forward-line arg)
+      (move-to-column column t)
+      (set-mark (point))
+      (insert text)
+      (exchange-point-and-mark)
+      (setq deactivate-mark nil)))
+   (t
+    (let ((column (current-column)))
+      (beginning-of-line)
+      (when (or (> arg 0) (not (bobp)))
+        (forward-line)
+        (when (or (< arg 0) (not (eobp)))
+          (transpose-lines arg)
+          (when (and (eval-when-compile
+                       '(and (>= emacs-major-version 24)
+                             (>= emacs-minor-version 3)))
+                     (< arg 0))
+            (forward-line -1)))
+        (forward-line -1))
+      (move-to-column column t)))))
 
 ;; macro for latex make
 ;; see

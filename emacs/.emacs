@@ -2,27 +2,37 @@
 ;;http://homepages.inf.ed.ac.uk/s0243221/emacs/
 
 (custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
  '(auto-fill-column t)
  '(column-number-mode t)
  '(delete-selection-mode t)
  '(inhibit-startup-screen t)
  '(mouse-wheel-mode t)
  '(setq transient-mark-mode t)
- '(show-paren-mode t))
+ '(show-paren-mode t)
+ '(vc-follow-symlinks t))
 
 ; add ~/.emacs.d directory
 (setq load-path (nconc '("~/.emacs.d") load-path)) ;; load-path
 (load "~/.emacs.d/fill-column-indicator.el")
 (load "~/.emacs.d/util.el")
+;https://github.com/rejeep/drag-stuff.el
+(load "~/.emacs.d/drag-stuff.el")
 
 (add-hook 'latex-mode-hook '(lambda ()
   (local-set-key (kbd "\C-j") 'newline-and-indent)))
 
 (setq ispell-program-name "/usr/local/bin/ispell")
 
+(require 'drag-stuff)
+(drag-stuff-global-mode 1)
+
 (require 'fill-column-indicator)
-(add-hook 'c-mode-hook 'fci-mode)
-(add-hook 'LaTex-mode-hook 'fci-mode)
+(add-hook 'c-mode-hook 'turn-on-fci-mode)
+(add-hook 'LaTex-mode-hook 'turn-on-fci-mode)
 (setq fci-rule-width 1)
 (setq fci-rule-color "darkblue")
 
@@ -40,18 +50,12 @@
 ;; ===== Make Text mode the default mode for new buffers =====
 (setq default-major-mode 'text-mode)
 
-(define-key input-decode-map "\e[1;2D" [S-left])
-(define-key input-decode-map "\e[1;2C" [S-right])
-(define-key input-decode-map "\e[1;2B" [S-down])
-(define-key input-decode-map "\e[1;2A" [S-up])
-(define-key input-decode-map "\e[1;2F" [S-end])
-(define-key input-decode-map "\e[1;2H" [S-home])
-
-(global-set-key (kbd "C-c <left>")  'windmove-left)
-(global-set-key (kbd "C-c <right>") 'windmove-right)
-(global-set-key (kbd "C-c <up>")    'windmove-up)
-(global-set-key (kbd "C-c <down>")  'windmove-down)
-
 (set-default-font "monaco-18")
 (put 'upcase-region 'disabled nil)
 (put 'downcase-region 'disabled nil)
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
