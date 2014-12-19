@@ -8,6 +8,8 @@
  ;; If there is more than one, they won't work right.
  '(auto-fill-column t)
  '(column-number-mode t)
+ '(custom-enabled-themes (quote (solarized-dark)))
+ '(custom-safe-themes (quote ("1e7e097ec8cb1f8c3a912d7e1e0331caeed49fef6cff220be63bd2a6ba4cc365" "fc5fcb6f1f1c1bc01305694c59a1a861b008c534cae8d0e48e4d5e81ad718bc6" default)))
  '(delete-selection-mode t)
  '(inhibit-startup-screen t)
  '(mouse-wheel-mode t)
@@ -17,10 +19,13 @@
 
 ; add ~/.emacs.d directory
 (setq load-path (nconc '("~/.emacs.d") load-path)) ;; load-path
+
 (load "~/.emacs.d/fill-column-indicator.el")
 (load "~/.emacs.d/util.el")
 ;https://github.com/rejeep/drag-stuff.el
 (load "~/.emacs.d/drag-stuff.el")
+
+(load-theme 'solarized-dark t)
 
 (add-hook 'latex-mode-hook '(lambda ()
   (local-set-key (kbd "\C-j") 'newline-and-indent)))

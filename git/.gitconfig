@@ -3,3 +3,5 @@
 	name = Jeong-Gyu Kim
 [core]
 	excludesfile = /Users/jgkim/.gitignore_global
+[alias]
+	st = status

@@ -277,9 +277,9 @@
 (defun drag-stuff-define-keys ()
   "Defines keys for `drag-stuff-mode'."
   (define-key drag-stuff-mode-map (drag-stuff--kbd 'up) 'drag-stuff-up)
-  (define-key drag-stuff-mode-map (drag-stuff--kbd 'down) 'drag-stuff-down)
-  (define-key drag-stuff-mode-map (drag-stuff--kbd 'right) 'drag-stuff-right)
-  (define-key drag-stuff-mode-map (drag-stuff--kbd 'left) 'drag-stuff-left))
+  (define-key drag-stuff-mode-map (drag-stuff--kbd 'down) 'drag-stuff-down))
+;  (define-key drag-stuff-mode-map (drag-stuff--kbd 'right) 'drag-stuff-right)
+;  (define-key drag-stuff-mode-map (drag-stuff--kbd 'left) 'drag-stuff-left))
 
 ;;;###autoload
 (define-minor-mode drag-stuff-mode
