@@ -67,6 +67,12 @@ if [ -f /etc/bash_completion ] && ! shopt -oq posix; then
     . /etc/bash_completion
 fi
 
+
+source $HOME/.git-completion.bash
+source $HOME/.git-prompt.sh
+PS1='[\u@\h \W$(__git_ps1 " (%s)")]\$ '   # adjust this to your prompt liking
+
+
 # For ipython notebook locale
 # Ref: http://stackoverflow.com/questions/15526996/ipython-notebook-locale-error
 export LC_ALL=en_US.UTF-8
