@@ -3,9 +3,9 @@
 	name = Jeong-Gyu Kim
 [core]
 	excludesfile = /Users/jgkim/.gitignore_global
-[core]
-	ui = auto
 [alias]
 	st = status
 [credential]
 	helper = cache --timeout=7200
+[color]
+	ui = auto
