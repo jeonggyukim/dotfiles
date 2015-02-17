@@ -2,10 +2,11 @@
 	email = omyojj@gmail.com
 	name = Jeong-Gyu Kim
 [core]
-	excludesfile = /Users/jgkim/.gitignore_global
-[alias]
-	st = status
-[credential]
-	helper = cache --timeout=7200
+	excludesfile = ~/.gitignore_global
 [color]
 	ui = auto
+[credential]
+	helper = cache --timeout=7200
+[alias]
+	st = status
+	slog = log --oneline --topo-order --graph
