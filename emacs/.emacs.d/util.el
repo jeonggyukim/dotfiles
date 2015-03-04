@@ -30,6 +30,17 @@
 ;(global-set-key (kbd "<M-up>")  'backward-paragraph)
 
 
+;; latex macros
+;; type Figure~\ref{f:}
+(fset 'latexeq
+   [?E ?q ?u ?a ?t ?i ?o ?n ?~ ?\\ ?e ?q ?r ?e ?f ?\{ ?e ?: ?\} left])
+;; type Equation~\eqref{f:}
+(fset 'latexfig
+   [?F ?i ?g ?u ?r ?e ?~ ?\\ ?r ?e ?f ?\{ ?f ?: ?\} left])
+
+(global-set-key (kbd "C-c e") 'latexeq)
+(global-set-key (kbd "C-c f") 'latexfig)
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; custom functions
 
