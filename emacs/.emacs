@@ -16,6 +16,7 @@
  '(mouse-wheel-mode t)
  '(setq transient-mark-mode t)
  '(show-paren-mode t)
+ '(xterm-mouse-mode t)
  '(vc-follow-symlinks t))
 
 ; add ~/.emacs.d directory
@@ -37,9 +38,9 @@
 (drag-stuff-global-mode 1)
 (require 'fill-column-indicator)
 (add-hook 'c-mode-hook 'turn-on-fci-mode)
-(add-hook 'LaTex-mode-hook 'turn-on-fci-mode)
-(setq fci-rule-width 1)
-(setq fci-rule-color "darkblue")
+;(add-hook 'LaTex-mode-hook 'turn-on-fci-mode)
+;(setq fci-rule-width 1)
+;(setq fci-rule-color "darkblue")
 (setq tex-mode-hook 'turn-on-auto-fill)
 (setq-default fill-column 70)
 (if (display-graphic-p)
@@ -52,6 +53,20 @@
 
 ;; ===== Make Text mode the default mode for new buffers =====
 (setq default-major-mode 'text-mode)
+
+
+;; find aspell and hunspell automatically
+(cond
+ ((executable-find "aspell")
+  (setq ispell-program-name "aspell")
+  (setq ispell-extra-args '("--sug-mode=ultra" "--lang=en_US")))
+ ((executable-find "hunspell")
+  (setq ispell-program-name "hunspell")
+  (setq ispell-extra-args '("-d en_US")))
+ )
+
+
+
 
 ;(set-default-font "monaco-18")
 (put 'upcase-region 'disabled nil)
