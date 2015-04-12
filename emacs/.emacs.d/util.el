@@ -167,10 +167,11 @@
    (lambda (&optional arg) "Keyboard
    macro." (interactive "p") (kmacro-exec-ring-item (quote ([134217761
    109 97 107 101 return 24 49] 0 "%d")) arg)))
-(fset 'make
-   (lambda (&optional arg) "Keyboard
-   macro." (interactive "p") (kmacro-exec-ring-item (quote ([134217761
-   109 97 107 101 return 24 49] 0 "%d")) arg)))
+
+;; (fset 'make
+;;    (lambda (&optional arg) "Keyboard
+;;    macro." (interactive "p") (kmacro-exec-ring-item (quote ([134217761
+;;    109 97 107 101 return 24 49] 0 "%d")) arg)))
 
 
 ;; http://www.emacswiki.org/emacs/ShowParenMode
