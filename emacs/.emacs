@@ -53,7 +53,7 @@
 ;; ===== Make Text mode the default mode for new buffers =====
 (setq default-major-mode 'text-mode)
 
-;(set-default-font "monaco-18")
+(set-default-font "monaco-18")
 (put 'upcase-region 'disabled nil)
 (put 'downcase-region 'disabled nil)
 (custom-set-faces

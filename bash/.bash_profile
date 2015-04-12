@@ -79,7 +79,7 @@ export LC_ALL=en_US.UTF-8
 export LANG=en_US.UTF-8
 
 # pythonpath
-export PYTHONPATH=$PYTHONPATH:~/Dropbox/py/module
+export PYTHONPATH=$PYTHONPATH:~/Dropbox/py/module:~/Dropbox/hii/py/modules
 
 # MacPorts Installer addition on 2014-08-28_at_21:45:16: adding an
 # appropriate PATH variable for use with MacPorts.
@@ -87,7 +87,7 @@ export PATH="/opt/local/bin:/opt/local/sbin:$PATH"
 
 # bookmarks.sh script
 # Note that the use of bookmarks.sh script requires bash4.0+
-source ~/Dropbox/sh/scripts/bookmarks/bookmarks.sh
+source ~/dotfiles/bookmarks/bookmarks.sh
 export PATH="/usr/local/bin:/Users/jgkim/bin:$PATH"
 
 # added by Anaconda 2.0.1 installer
