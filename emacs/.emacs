@@ -43,6 +43,9 @@
 (require 'yasnippet)
 (yas-global-mode 1)
 (define-key global-map (kbd "C-c ;") 'iedit-mode)
+(require 'neotree)
+(define-key global-map (kbd "C-x C-n") 'neotree-toggle)
+
 
 ;;latex setting
 (require 'ac-math)
