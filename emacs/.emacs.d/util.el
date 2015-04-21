@@ -160,19 +160,6 @@
         (forward-line -1))
       (move-to-column column t)))))
 
-;; macro for latex make
-;; see
-;; http://www.gnu.org/software/emacs/manual/html_node/emacs/Save-Keyboard-Macro.html#Save-Keyboard-Macro
-(fset 'mk
-   (lambda (&optional arg) "Keyboard
-   macro." (interactive "p") (kmacro-exec-ring-item (quote ([134217761
-   109 97 107 101 return 24 49] 0 "%d")) arg)))
-
-;; (fset 'make
-;;    (lambda (&optional arg) "Keyboard
-;;    macro." (interactive "p") (kmacro-exec-ring-item (quote ([134217761
-;;    109 97 107 101 return 24 49] 0 "%d")) arg)))
-
 
 ;; http://www.emacswiki.org/emacs/ShowParenMode
 ;; When the matching paren is offscreen, show-paren-mode highlights
@@ -190,3 +177,49 @@
 			     (char-equal (char-syntax cb) ?\) )
 			     (blink-matching-open))))
     (when matching-text (message matching-text))))
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Vertical split shows more of each line, horizontal split shows more
+;; lines. This code toggles between them. It only works for frames
+;; with exactly two windows. The top window goes to the left or
+;; vice-versa. I was motivated by ediff-toggle-split and helped by
+;; TransposeWindows. There may well be better ways to write this.
+
+;; http://www.emacswiki.org/emacs/ToggleWindowSplit
+
+(defun window-toggle-split-direction ()
+  "Switch window split from horizontally to vertically, or vice versa.
+i.e. change right window to bottom, or change bottom window to right."
+  (interactive)
+  (require 'windmove)
+  (let ((done))
+    (dolist (dirs '((right . down) (down . right)))
+      (unless done
+        (let* ((win (selected-window))
+               (nextdir (car dirs))
+               (neighbour-dir (cdr dirs))
+               (next-win (windmove-find-other-window nextdir win))
+               (neighbour1 (windmove-find-other-window neighbour-dir win))
+               (neighbour2 (if next-win (with-selected-window next-win
+                                          (windmove-find-other-window neighbour-dir next-win)))))
+          ;;(message "win: %s\nnext-win: %s\nneighbour1: %s\nneighbour2:%s" win next-win neighbour1 neighbour2)
+          (setq done (and (eq neighbour1 neighbour2)
+                          (not (eq (minibuffer-window) next-win))))
+          (if done
+              (let* ((other-buf (window-buffer next-win)))
+                (delete-window next-win)
+                (if (eq nextdir 'right)
+                    (split-window-vertically)
+                  (split-window-horizontally))
+                (set-window-buffer (windmove-find-other-window neighbour-dir) other-buf))))))))
+
+(global-set-key (kbd "C-x |") 'window-toggle-split-direction)
+
+;; macro for latex make
+;; see
+;; http://www.gnu.org/software/emacs/manual/html_node/emacs/Save-Keyboard-Macro.html#Save-Keyboard-Macro
+(fset 'mk
+   (lambda (&optional arg) "Keyboard
+   macro." (interactive "p") (kmacro-exec-ring-item (quote ([134217761
+   109 97 107 101 return 24 49] 0 "%d")) arg)))

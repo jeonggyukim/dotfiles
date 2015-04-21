@@ -43,6 +43,8 @@
 (require 'yasnippet)
 (yas-global-mode 1)
 (define-key global-map (kbd "C-c ;") 'iedit-mode)
+(require 'xcscope)
+(setq cscope-do-not-update-database t)
 
 ;;latex setting
 (require 'ac-math)
