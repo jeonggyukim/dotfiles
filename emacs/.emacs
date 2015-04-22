@@ -28,38 +28,6 @@
 ; Emacs as a C/C++ Editor/IDE (Part 3): cedet mode for true intellisense
 ; http://youtu.be/Ib914gNr0ys
 
-<<<<<<< HEAD
-;; ; start package.el with emacs
-;; (require 'package)
-;; ; add MELPA to repository list
-;; (add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/"))
-;; ; initialize package.el
-;; (package-initialize)
-;; ; start auto-complete with emacs
-;; (require 'auto-complete)
-;; ; do default config for auto-complete
-;; (require 'auto-complete-config)
-;; (ac-config-default)
-;; (require 'yasnippet)
-;; (yas-global-mode 1)
-;; (define-key global-map (kbd "C-c ;") 'iedit-mode)
-
-;; (require 'xcscope)
-;; (setq cscope-do-not-update-database t)
-
-;; ;;latex setting
-;; (require 'ac-math)
-;; (add-to-list 'ac-modes 'latex-mode)   ; make auto-complete aware of `latex-mode`
-
-;; (defun ac-LaTeX-mode-setup () ; add ac-sources to default ac-sources
-;;   (setq ac-sources
-;; 	(append '(ac-source-math-unicode ac-source-math-latex ac-source-latex-commands)
-;; 		ac-sources))
-;;   )
-;; (add-hook 'LaTeX-mode-hook 'ac-LaTeX-mode-setup)
-;; (global-auto-complete-mode t) 
-;; (setq ac-math-unicode-in-math-p t)
-=======
 ; start package.el with emacs
 (require 'package)
 ; add MELPA to repository list
@@ -89,7 +57,6 @@
 (add-hook 'LaTeX-mode-hook 'ac-LaTeX-mode-setup)
 (global-auto-complete-mode t) 
 (setq ac-math-unicode-in-math-p t)
->>>>>>> 507c7036d22832f19c4aaf3cd6c1bc701b144e80
 
 ;; remap all key binds that point to tex-terminate-paragraph to
 ;; my-homemade-kill-line
