@@ -1,4 +1,4 @@
-!PATH=!PATH+':' + expand_path('+~/Dropbox/hii/idl/')
+!PATH=!PATH + ':' + expand_path('+~/Dropbox/hii/idl/')
 
 print,'Hello jgkim'
 device,true=24,retain=2,set_font='Helvetica Bold'
@@ -54,6 +54,8 @@ defsysv, '!dli_fig','~/Dropbox/H2/notes/ApJ_ReplyToReferee/'
 defsysv, '!h2_dataidl','~/Dropbox/H2/dataidl/'
 defsysv, '!h2_fig','~/Dropbox/hii/notes/ms0.1/'
 defsysv, '!dir_hii','~/Dropbox/hii/'
+defsysv, '!dir_ifront','/data/research/IFront/'
+
 
 ;for the usage of !RNG, refer to "~/docs/idl/TI/numerical_exercise/boxmuller.pro" and Coyote's IDL website
 defsysv, '!RNG', Obj_New('RandomNumberGenerator')
