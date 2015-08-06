@@ -73,7 +73,7 @@
 ;(setq fci-rule-width 1)
 ;(setq fci-rule-color "darkblue")
 (setq tex-mode-hook 'turn-on-auto-fill)
-(setq-default fill-column 70)
+(setq-default fill-column 80)
 (if (display-graphic-p)
     (x-focus-frame nil))
 

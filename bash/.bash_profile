@@ -94,6 +94,6 @@ export PATH="/usr/local/bin:/Users/jgkim/bin:$PATH"
 export PATH="/Users/jgkim/anaconda/bin:$PATH"
 
 # idl setup
-source ~/Applications/exelis/idl83/bin/idl_setup.bash
+#source ~/Applications/exelis/idl83/bin/idl_setup.bash
 export IDL_STARTUP=~/.idlstartup.pro
 
