@@ -20,6 +20,15 @@
 (load "~/.emacs.d/util.el")
 ;(load "~/.emacs.d/drag-stuff.el") ;https://github.com/rejeep/drag-stuff.el
 
+
+; start package.el with emacs
+(require 'package)
+; add MELPA to repository list
+(add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/"))
+; initialize package.el
+(package-initialize)
+
+
 ; Settings following video tutorials:
 ; Emacs as a C/C++ Editor/IDE (Part I): auto-complete, yasnippet, and auto-complete-c-headers
 ; http://youtu.be/HTUE03LnaXA
@@ -28,22 +37,28 @@
 ; Emacs as a C/C++ Editor/IDE (Part 3): cedet mode for true intellisense
 ; http://youtu.be/Ib914gNr0ys
 
-;; ; start package.el with emacs
-;; (require 'package)
-;; ; add MELPA to repository list
-;; (add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/"))
-;; ; initialize package.el
-;; (package-initialize)
-;; ; start auto-complete with emacs
-;; (require 'auto-complete)
-;; ; do default config for auto-complete
-;; (require 'auto-complete-config)
-;; (ac-config-default)
-;; (require 'yasnippet)
-;; (yas-global-mode 1)
-;; (define-key global-map (kbd "C-c ;") 'iedit-mode)
-;; (require 'xcscope)
-;; (setq cscope-do-not-update-database t)
+; start auto-complete with emacs
+(require 'auto-complete)
+; do default config for auto-complete
+(require 'auto-complete-config)
+(ac-config-default)
+
+(require 'yasnippet)
+(yas-global-mode 1) ; yasnippet is always on
+(define-key global-map (kbd "C-c ;") 'iedit-mode) ; iedit has a bug
+(require 'xcscope)
+(setq cscope-do-not-update-database t)
+
+; let's define a function which initializes auto-complete-c-headers and gets called for c/c++ hooks
+(defun my:ac-c-header-init ()
+  (require 'auto-complete-c-headers)
+  (add-to-list 'ac-sources 'ac-sources-c-headers)
+  (add-to-list 'achead:include-directories '"/usr/include:/usr/local/include")
+  )
+;now let's call this function from c/c++ hooks
+(add-hook 'c++-mode-hook 'my:acc-c-header-init)
+(add-hook 'c-mode-hook 'my:acc-c-header-init)
+
 
 
 ;; ;;ac-math latex setting
