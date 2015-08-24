@@ -10,3 +10,6 @@
 [alias]
 	st = status
 	slog = log --oneline --topo-order --graph
+
+[push]
+	default = simple

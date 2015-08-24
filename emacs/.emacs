@@ -8,7 +8,7 @@
  '(inhibit-startup-screen t)
  '(mouse-wheel-mode t)
  '(setq transient-mark-mode t)
- '(xterm-mouse-mode t)
+; '(xterm-mouse-mode t)
  '(vc-follow-symlinks t)
  '(column-number-mode t)
  '(show-paren-mode t)
@@ -46,7 +46,10 @@
 (require 'yasnippet)
 (yas-global-mode 1) ; yasnippet is always on
 (define-key global-map (kbd "C-c ;") 'iedit-mode) ; iedit has a bug
+
+(add-to-list 'load-path "~/.emacs.d/xcscope-20140510.1437")
 (require 'xcscope)
+(cscope-setup)
 (setq cscope-do-not-update-database t)
 
 ; let's define a function which initializes auto-complete-c-headers and gets called for c/c++ hooks
@@ -59,7 +62,7 @@
 (add-hook 'c++-mode-hook 'my:acc-c-header-init)
 (add-hook 'c-mode-hook 'my:acc-c-header-init)
 
-
+(which-function-mode 1)
 
 ;; ;;ac-math latex setting
 ;; (require 'ac-math) ;; Auto-complete sources for input of mathematical symbols and latex tags
@@ -82,13 +85,13 @@
 (require 'drag-stuff)
 (drag-stuff-global-mode 1)
 (require 'fill-column-indicator)
+(setq-default fill-column 80)
 (add-hook 'c-mode-hook 'turn-on-fci-mode)
+(setq fci-rule-color "darkblue")
 
 ;(add-hook 'LaTex-mode-hook 'turn-on-fci-mode)
 ;(setq fci-rule-width 1)
-;(setq fci-rule-color "darkblue")
 (setq tex-mode-hook 'turn-on-auto-fill)
-(setq-default fill-column 80)
 (if (display-graphic-p)
     (x-focus-frame nil))
 
