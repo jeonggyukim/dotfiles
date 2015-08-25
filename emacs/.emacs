@@ -28,15 +28,6 @@
 (require 'drag-stuff)
 (drag-stuff-global-mode 1)
 
-;; fill-column indicator
-(setq-default fill-column 80)
-;(load "~/.emacs.d/fill-column-indicator.el")
-(require 'fill-column-indicator)
-(setq fci-rule-color "darkblue")
-(setq fci-rule-width 1)
-(add-hook 'c-mode-hook 'turn-on-fci-mode)
-(add-hook 'emacs-lisp-mode-hook 'turn-on-fci-mode)
-(add-hook 'LaTex-mode-hook 'turn-on-fci-mode)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; c-mode Settings following video tutorials:
@@ -98,6 +89,7 @@
 
 (which-function-mode 1)
 
+
 ;;;;;;;;;;;;;;;;;;;;
 ;;;; latex settings
 ;;;;;;;;;;;;;;;;;;;;
@@ -131,6 +123,20 @@
 ;; (load "auctex.el" nil t t)
 ;; (load "preview-latex.el" nil t t)
 
+
+;; fill-column indicator
+;; for some unknown reason, add-hook c-mode-hook turn-on-fci-mode does not work
+;; if it appears before c-mode settings
+(setq-default fill-column 80)
+;(load "~/.emacs.d/fill-column-indicator.el")
+(require 'fill-column-indicator)
+(setq fci-rule-color "darkblue")
+(setq fci-rule-width 1)
+(add-hook 'c-mode-hook 'turn-on-fci-mode)
+(add-hook 'emacs-lisp-mode-hook 'turn-on-fci-mode)
+(add-hook 'LaTex-mode-hook 'turn-on-fci-mode)
+
+
 ;; find aspell and hunspell automatically
 (cond
  ((executable-find "aspell")
@@ -140,6 +146,8 @@
   (setq ispell-program-name "hunspell")
   (setq ispell-extra-args '("-d en_US")))
  )
+
+
 
 (if (eq system-type 'darwin)
     (set-default-font "Monaco 18"))
