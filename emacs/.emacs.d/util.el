@@ -32,6 +32,28 @@
 ;(global-set-key (kbd "<M-down>")  'forward-paragraph)
 ;(global-set-key (kbd "<M-up>")  'backward-paragraph)
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; replace list-buffers with the more advanced ibuffer:
+(global-set-key (kbd "C-x C-b") 'ibuffer)
+
+;; Ensure ibuffer opens with point at the current buffer's entry.
+;; http://stackoverflow.com/questions/3417438/closing-all-other-buffers-in-emacs
+
+;; m (mark the buffer you want to keep)
+;; t (toggle marks)
+;; D (kill all marked buffers)
+
+(defadvice ibuffer
+  (around ibuffer-point-to-most-recent) ()
+  "Open ibuffer with cursor pointed to most recent buffer name."
+  (let ((recent-buffer-name (buffer-name)))
+    ad-do-it
+    (ibuffer-jump-to-buffer recent-buffer-name)))
+(ad-activate 'ibuffer)
+
+
+
+
 
 ;; latex macros
 ;; type Figure~\ref{f:}

@@ -4,18 +4,55 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(auto-fill-column t)
+ '(column-number-mode t)
  '(delete-selection-mode t)
  '(inhibit-startup-screen t)
  '(mouse-wheel-mode t)
  '(setq transient-mark-mode t)
- '(vc-follow-symlinks t)
- '(column-number-mode t)
  '(show-paren-mode t)
-; '(xterm-mouse-mode t)
-)
+ '(vc-follow-symlinks t)
+ '(xterm-mouse-mode t))
 
-;; Make Text mode the default mode for new buffers
-(setq default-major-mode 'text-mode)
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Package Setup
+;; A bit old but good article on package management in emacs:
+;; http://batsov.com/articles/2012/02/19/\
+;; package-management-in-emacs-the-good-the-bad-and-the-ugly/
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; you can update all of the installed packages
+;; by using the “U” key in the packages list view
+
+(require 'package) ;; start package.el with emacs
+(add-to-list 'package-archives
+	     '("melpa" . "http://melpa.milkbox.net/packages/") t)
+;(add-to-list 'package-archives
+;             '("marmalade" . "http://marmalade-repo.org/packages/") t)
+(package-initialize) ; initialize package.el
+
+(defvar local-packages
+  '(auto-complete yasnippet 
+    projectile epc jedi ein ein-mumamo
+    xcscope)
+  "A list of packages to ensure installed at launch")
+
+(defun uninstalled-packages (packages)
+  (delq nil
+	(mapcar (lambda (p) (if (package-installed-p p nil) nil p)) packages)))
+
+(let ((need-to-install (uninstalled-packages local-packages)))
+  (when need-to-install
+    (progn
+      (package-refresh-contents)
+      (dolist (p need-to-install)
+	(package-install p)))))
+
 
 ;; load-path
 ;; add ~/.emacs.d directory
@@ -30,7 +67,7 @@
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; c-mode Settings following video tutorials:
+;; c-mode settings following video tutorials:
 ;; Emacs as a C/C++ Editor/IDE (Part I): auto-complete, yasnippet, and
 ;; auto-complete-c-headers: http://youtu.be/HTUE03LnaXA
 ;; Emacs as a C/C++ Editor/IDE (Part 2): iedit, flymake-google-cpplint,
@@ -39,21 +76,13 @@
 ;; http://youtu.be/Ib914gNr0ys
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;; start package.el with emacs
-(require 'package)
-;; add MELPA to repository list
-(add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/"))
-;; initialize package.el
-(package-initialize)
-
 ;; yasnippet
 (require 'yasnippet)
 (yas-global-mode 1) ; yasnippet is always on
 
 ;; start auto-complete with emacs
 (require 'auto-complete)
-;; do default config for auto-complete
-(require 'auto-complete-config)
+(require 'auto-complete-config) ;; do default config for auto-complete
 (ac-config-default)
 
 ;;let's define a function which initializes auto-complete-c-headers and gets
@@ -84,11 +113,25 @@
 (cscope-setup)
 (setq cscope-do-not-update-database t)
 
-;; iedit has a bug
+;; iedit has a bug (in Mac)
 (define-key global-map (kbd "C-c ;") 'iedit-mode) 
 
 (which-function-mode 1)
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; python settings
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;(add-hook 'python-mode-hook 'jedi:ac-setup) ; if ac is all you need
+;;Note that you must set jedi:setup-keys before loading jedi.el.
+(setq jedi:setup-keys t)                      ; optional
+(require 'jedi)
+(add-hook 'python-mode-hook 'jedi:setup)
+(setq jedi:complete-on-dot t)                 ; optional
+
+(require 'ein)
+(setq ein:use-auto-complete t)
+(add-hook 'ein:connect-mode-hook 'ein:jedi-setup)
 
 ;;;;;;;;;;;;;;;;;;;;
 ;;;; latex settings
@@ -112,8 +155,6 @@
 (define-key (current-global-map) [remap tex-terminate-paragraph]
 'newline-and-indent)
 
-(setq ispell-program-name "/usr/local/bin/ispell")
-
 (setq tex-mode-hook 'turn-on-auto-fill)
 (if (display-graphic-p)
     (x-focus-frame nil))
@@ -124,9 +165,9 @@
 ;; (load "preview-latex.el" nil t t)
 
 
-;; fill-column indicator
-;; for some unknown reason, add-hook c-mode-hook turn-on-fci-mode does not work
-;; if it appears before c-mode settings
+;;fill-column indicator
+;;for some unknown reason, add-hook c-mode-hook turn-on-fci-mode does not work
+;;if it appears before c-mode settings
 (setq-default fill-column 80)
 ;(load "~/.emacs.d/fill-column-indicator.el")
 (require 'fill-column-indicator)
@@ -136,8 +177,8 @@
 (add-hook 'emacs-lisp-mode-hook 'turn-on-fci-mode)
 (add-hook 'LaTex-mode-hook 'turn-on-fci-mode)
 
-
-;; find aspell and hunspell automatically
+;;find aspell and hunspell automatically
+;;http://blog.binchen.org/posts/what-s-the-best-spell-check-set-up-in-emacs.html
 (cond
  ((executable-find "aspell")
   (setq ispell-program-name "aspell")
@@ -147,14 +188,24 @@
   (setq ispell-extra-args '("-d en_US")))
  )
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; iswitchbuffers
+;; http://www.emacswiki.org/emacs/IswitchBuffers
+(iswitchb-mode 1)
+(setq iswitchb-default-method 'samewindow)
+(defun iswitchb-local-keys ()
+  (mapc (lambda (K)
+	  (let* ((key (car K)) (fun (cdr K)))
+	    (define-key iswitchb-mode-map (edmacro-parse-keys key) fun)))
+	'(("<right>" . iswitchb-next-match)
+	  ("<left>"  . iswitchb-prev-match)
+	  ("<up>"    . ignore             )
+	  ("<down>"  . ignore             ))))
+(add-hook 'iswitchb-define-mode-map-hook 'iswitchb-local-keys)
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;; Make Text mode the default mode for new buffers
+(setq default-major-mode 'text-mode)
 
 (if (eq system-type 'darwin)
     (set-default-font "Monaco 18"))
-
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
