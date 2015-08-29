@@ -14,10 +14,9 @@
  '(show-paren-mode t)
 )
 
-; add ~/.emacs.d directory
 (setq load-path (nconc '("~/.emacs.d") load-path)) ;; load-path
-;(load "~/.emacs.d/fill-column-indicator.el")
 (load "~/.emacs.d/util.el")
+;(load "~/.emacs.d/fill-column-indicator.el")
 ;(load "~/.emacs.d/drag-stuff.el") ;https://github.com/rejeep/drag-stuff.el
 
 ; Settings following video tutorials:
@@ -31,7 +30,7 @@
 ; start package.el with emacs
 (require 'package)
 ; add MELPA to repository list
-(add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/"))
+;(add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/"))
 ; initialize package.el
 (package-initialize)
 ; start auto-complete with emacs
@@ -44,7 +43,6 @@
 (define-key global-map (kbd "C-c ;") 'iedit-mode)
 (require 'xcscope)
 (setq cscope-do-not-update-database t)
-
 
 ;;ac-math latex setting
 (require 'ac-math) ;; Auto-complete sources for input of mathematical symbols and latex tags
@@ -66,12 +64,12 @@
 (setq ispell-program-name "/usr/local/bin/ispell")
 (require 'drag-stuff)
 (drag-stuff-global-mode 1)
-(require 'fill-column-indicator)
-(add-hook 'c-mode-hook 'turn-on-fci-mode)
+;; (require 'fill-column-indicator)
+;; (add-hook 'c-mode-hook 'turn-on-fci-mode)
+;; (add-hook 'LaTex-mode-hook 'turn-on-fci-mode)
+;; (setq fci-rule-width 1)
+;; (setq fci-rule-color "darkblue")
 
-;(add-hook 'LaTex-mode-hook 'turn-on-fci-mode)
-;(setq fci-rule-width 1)
-;(setq fci-rule-color "darkblue")
 (setq tex-mode-hook 'turn-on-auto-fill)
 (setq-default fill-column 70)
 (if (display-graphic-p)
@@ -85,7 +83,6 @@
 ;; ===== Make Text mode the default mode for new buffers =====
 (setq default-major-mode 'text-mode)
 
-
 ;; find aspell and hunspell automatically
 (cond
  ((executable-find "aspell")
@@ -95,6 +92,9 @@
   (setq ispell-program-name "hunspell")
   (setq ispell-extra-args '("-d en_US")))
  )
+
+(set-default-font "Monaco 18")
+
 
 (put 'upcase-region 'disabled nil)
 (put 'downcase-region 'disabled nil)

@@ -97,3 +97,4 @@ export PATH="/Users/jgkim/anaconda/bin:$PATH"
 source ~/Applications/exelis/idl83/bin/idl_setup.bash
 export IDL_STARTUP=~/.idlstartup.pro
 
+export CSCOPE_EDITOR=`which emacs`
