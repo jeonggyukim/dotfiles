@@ -1,0 +1,17 @@
+#!/bin/bash
+
+export LD_LIBRARY_PATH=/usr/local/lib:/usr/lib:/opt/Healpix_3.20/lib
+
+# added by Anaconda 2.2.0 installer
+export PATH="/home/jgkim/anaconda/bin:$PATH"
+export PYTHONPATH=$PYTHONPATH:~/Dropbox/py/module:~/Dropbox/hii/py/modules:~/Dropbox/gmc/py/pkg
+
+# texmf
+export TEXMFLOCAL=/home/jgkim/.texmf
+
+# OPEN MPI
+export PATH="$PATH:/home/jgkim/.openmpi/bin"
+export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:/home/$USER/.openmpi/lib/"
+
+#export SLUG_DIR=/home/jgkim/docs/slug2
+#. /usr/local/exelis/idl83/bin/idl_setup.bash

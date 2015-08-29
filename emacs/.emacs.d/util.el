@@ -26,8 +26,33 @@
 (global-set-key "\M-n" "\C-u1\C-v")
 (global-set-key "\M-p" "\C-u1\M-v")
 
+(put 'upcase-region 'disabled nil)
+(put 'downcase-region 'disabled nil)
+
 ;(global-set-key (kbd "<M-down>")  'forward-paragraph)
 ;(global-set-key (kbd "<M-up>")  'backward-paragraph)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; replace list-buffers with the more advanced ibuffer:
+(global-set-key (kbd "C-x C-b") 'ibuffer)
+
+;; Ensure ibuffer opens with point at the current buffer's entry.
+;; http://stackoverflow.com/questions/3417438/closing-all-other-buffers-in-emacs
+
+;; m (mark the buffer you want to keep)
+;; t (toggle marks)
+;; D (kill all marked buffers)
+
+(defadvice ibuffer
+  (around ibuffer-point-to-most-recent) ()
+  "Open ibuffer with cursor pointed to most recent buffer name."
+  (let ((recent-buffer-name (buffer-name)))
+    ad-do-it
+    (ibuffer-jump-to-buffer recent-buffer-name)))
+(ad-activate 'ibuffer)
+
+
+
 
 
 ;; latex macros
@@ -41,8 +66,17 @@
 (global-set-key (kbd "C-c e") 'latexeq)
 (global-set-key (kbd "C-c f") 'latexfig)
 
+;; macro for latex make
+;; see
+;; http://www.gnu.org/software/emacs/manual/html_node/emacs/Save-Keyboard-Macro.html#Save-Keyboard-Macro
+(fset 'mk
+   (lambda (&optional arg) "Keyboard
+   macro." (interactive "p") (kmacro-exec-ring-item (quote ([134217761
+   109 97 107 101 return 24 49] 0 "%d")) arg)))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; custom functions
+;; custom functions
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; eem - Edit the .emacs file
 (defun eem ()
@@ -99,7 +133,7 @@
       (delete-char 1)
       (move-to-column previous-column))))
 
-;; Now bind the delete line function to the C-M-k key
+;; Now bind the nuke line function to the C-M-k key
 (global-set-key (kbd "C-M-k") 'nuke-line)
 ;(global-set-key [f8] 'nuke-line)
 
@@ -115,6 +149,7 @@
       (kill-new (buffer-substring beg end))))
   (beginning-of-line 2))
 
+;; Now bind the quick copy line function to the C-M-j key
 (global-set-key (kbd "C-M-j") 'quick-copy-line)
 
 
@@ -215,11 +250,3 @@ i.e. change right window to bottom, or change bottom window to right."
                 (set-window-buffer (windmove-find-other-window neighbour-dir) other-buf))))))))
 
 (global-set-key (kbd "C-x |") 'window-toggle-split-direction)
-
-;; macro for latex make
-;; see
-;; http://www.gnu.org/software/emacs/manual/html_node/emacs/Save-Keyboard-Macro.html#Save-Keyboard-Macro
-(fset 'mk
-   (lambda (&optional arg) "Keyboard
-   macro." (interactive "p") (kmacro-exec-ring-item (quote ([134217761
-   109 97 107 101 return 24 49] 0 "%d")) arg)))

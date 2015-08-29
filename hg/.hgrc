@@ -1,0 +1,7 @@
+[ui]
+username = Jeong-Gyu Kim <omyojj@gmail.com>
+ssh = ssh -C
+editor=emacs -nw
+
+[extensions]
+purge =

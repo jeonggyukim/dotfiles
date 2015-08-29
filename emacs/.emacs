@@ -4,74 +4,157 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(auto-fill-column t)
+ '(column-number-mode t)
  '(delete-selection-mode t)
  '(inhibit-startup-screen t)
  '(mouse-wheel-mode t)
  '(setq transient-mark-mode t)
- '(xterm-mouse-mode t)
- '(vc-follow-symlinks t)
- '(column-number-mode t)
  '(show-paren-mode t)
-)
+ '(vc-follow-symlinks t)
+ '(xterm-mouse-mode t))
 
-(setq load-path (nconc '("~/.emacs.d") load-path)) ;; load-path
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Package Setup
+;; A bit old but good article on package management in emacs:
+;; http://batsov.com/articles/2012/02/19/\
+;; package-management-in-emacs-the-good-the-bad-and-the-ugly/
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; you can update all of the installed packages
+;; by using the “U” key in the packages list view
+
+(require 'package) ;; start package.el with emacs
+(add-to-list 'package-archives
+	     '("melpa" . "http://melpa.milkbox.net/packages/") t)
+;(add-to-list 'package-archives
+;             '("marmalade" . "http://marmalade-repo.org/packages/") t)
+(package-initialize) ; initialize package.el
+
+(defvar local-packages
+  '(auto-complete yasnippet 
+    projectile epc jedi ein ein-mumamo
+    xcscope)
+  "A list of packages to ensure installed at launch")
+
+(defun uninstalled-packages (packages)
+  (delq nil
+	(mapcar (lambda (p) (if (package-installed-p p nil) nil p)) packages)))
+
+(let ((need-to-install (uninstalled-packages local-packages)))
+  (when need-to-install
+    (progn
+      (package-refresh-contents)
+      (dolist (p need-to-install)
+	(package-install p)))))
+
+
+;; load-path
+;; add ~/.emacs.d directory
+(setq load-path (nconc '("~/.emacs.d") load-path)) 
 (load "~/.emacs.d/util.el")
-;(load "~/.emacs.d/fill-column-indicator.el")
-;(load "~/.emacs.d/drag-stuff.el") ;https://github.com/rejeep/drag-stuff.el
 
-; Settings following video tutorials:
-; Emacs as a C/C++ Editor/IDE (Part I): auto-complete, yasnippet, and auto-complete-c-headers
-; http://youtu.be/HTUE03LnaXA
-; Emacs as a C/C++ Editor/IDE (Part 2): iedit, flymake-google-cpplint, google-c-style
-; http://youtu.be/r_HW0EB67eY
-; Emacs as a C/C++ Editor/IDE (Part 3): cedet mode for true intellisense
-; http://youtu.be/Ib914gNr0ys
+;; drag-stuff
+;; https://github.com/rejeep/drag-stuff.el
+;; (load "~/.emacs.d/drag-stuff.el")
+(require 'drag-stuff)
+(drag-stuff-global-mode 1)
 
-; start package.el with emacs
-(require 'package)
-; add MELPA to repository list
-;(add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/"))
-; initialize package.el
-(package-initialize)
-; start auto-complete with emacs
-(require 'auto-complete)
-; do default config for auto-complete
-(require 'auto-complete-config)
-(ac-config-default)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; c-mode settings following video tutorials:
+;; Emacs as a C/C++ Editor/IDE (Part I): auto-complete, yasnippet, and
+;; auto-complete-c-headers: http://youtu.be/HTUE03LnaXA
+;; Emacs as a C/C++ Editor/IDE (Part 2): iedit, flymake-google-cpplint,
+;; google-c-style: http://youtu.be/r_HW0EB67eY
+;; Emacs as a C/C++ Editor/IDE (Part 3): cedet mode for true intellisense:
+;; http://youtu.be/Ib914gNr0ys
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; yasnippet
 (require 'yasnippet)
-(yas-global-mode 1)
-(define-key global-map (kbd "C-c ;") 'iedit-mode)
+(yas-global-mode 1) ; yasnippet is always on
+
+;; start auto-complete with emacs
+(require 'auto-complete)
+(require 'auto-complete-config) ;; do default config for auto-complete
+(ac-config-default)
+
+;;let's define a function which initializes auto-complete-c-headers and gets
+;;called for c/c++ hooks
+(defun my:ac-c-header-init ()
+  (require 'auto-complete-c-headers)
+  (add-to-list 'ac-sources 'ac-sources-c-headers)
+  (add-to-list 'achead:include-directories '"/usr/include:/usr/local/include")
+  )
+;;now let's call this function from c/c++ hooks
+(add-hook 'c++-mode-hook 'my:acc-c-header-init)
+(add-hook 'c-mode-hook 'my:acc-c-header-init)
+
+;; to deal with complexity between yasnippet and auto-complete
+;; see http://emacs.stackexchange.com/questions/2767/auto-complete-stops-working-with-c-files
+(setq ac-source-yasnippet nil)
+
+(define-key yas-minor-mode-map (kbd "<tab>") nil)
+(define-key yas-minor-mode-map (kbd "TAB") nil)
+(define-key yas-minor-mode-map (kbd "<backtab>") 'yas-expand)
+; modify some keys
+(ac-set-trigger-key "TAB")
+(ac-set-trigger-key "<tab>")
+
+;; cscope
+(add-to-list 'load-path "~/.emacs.d/xcscope-20140510.1437")
 (require 'xcscope)
+(cscope-setup)
 (setq cscope-do-not-update-database t)
 
-;;ac-math latex setting
-(require 'ac-math) ;; Auto-complete sources for input of mathematical symbols and latex tags
-(add-to-list 'ac-modes 'latex-mode)   ; make auto-complete aware of `latex-mode`
-(defun ac-LaTeX-mode-setup () ; add ac-sources to default ac-sources
-  (setq ac-sources
-	(append '(ac-source-math-unicode ac-source-math-latex ac-source-latex-commands)
-		ac-sources))
-  )
-(add-hook 'LaTeX-mode-hook 'ac-LaTeX-mode-setup)
-(global-auto-complete-mode t) 
-(setq ac-math-unicode-in-math-p t)
+;; iedit has a bug (in Mac)
+(define-key global-map (kbd "C-c ;") 'iedit-mode) 
+
+(which-function-mode 1)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; python settings
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;(add-hook 'python-mode-hook 'jedi:ac-setup) ; if ac is all you need
+;;Note that you must set jedi:setup-keys before loading jedi.el.
+(setq jedi:setup-keys t)                      ; optional
+(require 'jedi)
+(add-hook 'python-mode-hook 'jedi:setup)
+(setq jedi:complete-on-dot t)                 ; optional
+
+(require 'ein)
+(setq ein:use-auto-complete t)
+(add-hook 'ein:connect-mode-hook 'ein:jedi-setup)
+
+;;;;;;;;;;;;;;;;;;;;
+;;;; latex settings
+;;;;;;;;;;;;;;;;;;;;
+
+;; ;;ac-math latex setting
+;; (require 'ac-math) ;; Auto-complete sources for input of mathematical symbols and latex tags
+;; (add-to-list 'ac-modes 'latex-mode)   ; make auto-complete aware of `latex-mode`
+;; (defun ac-LaTeX-mode-setup () ; add ac-sources to default ac-sources
+;;   (setq ac-sources
+;; 	(append '(ac-source-math-unicode ac-source-math-latex ac-source-latex-commands)
+;; 		ac-sources))
+;;   )
+;; (add-hook 'LaTeX-mode-hook 'ac-LaTeX-mode-setup)
+;; (global-auto-complete-mode t) 
+;; (setq ac-math-unicode-in-math-p t)
 
 ;; remap all key binds that point to tex-terminate-paragraph to
 ;; my-homemade-kill-line
 (define-key (current-global-map) [remap tex-terminate-paragraph]
 'newline-and-indent)
 
-(setq ispell-program-name "/usr/local/bin/ispell")
-(require 'drag-stuff)
-(drag-stuff-global-mode 1)
-;; (require 'fill-column-indicator)
-;; (add-hook 'c-mode-hook 'turn-on-fci-mode)
-;; (add-hook 'LaTex-mode-hook 'turn-on-fci-mode)
-;; (setq fci-rule-width 1)
-;; (setq fci-rule-color "darkblue")
-
 (setq tex-mode-hook 'turn-on-auto-fill)
-(setq-default fill-column 70)
 (if (display-graphic-p)
     (x-focus-frame nil))
 
@@ -80,10 +163,21 @@
 ;; (load "auctex.el" nil t t)
 ;; (load "preview-latex.el" nil t t)
 
-;; ===== Make Text mode the default mode for new buffers =====
-(setq default-major-mode 'text-mode)
 
-;; find aspell and hunspell automatically
+;;fill-column indicator
+;;for some unknown reason, add-hook c-mode-hook turn-on-fci-mode does not work
+;;if it appears before c-mode settings
+(setq-default fill-column 80)
+;(load "~/.emacs.d/fill-column-indicator.el")
+(require 'fill-column-indicator)
+(setq fci-rule-color "darkblue")
+(setq fci-rule-width 1)
+(add-hook 'c-mode-hook 'turn-on-fci-mode)
+(add-hook 'emacs-lisp-mode-hook 'turn-on-fci-mode)
+(add-hook 'LaTex-mode-hook 'turn-on-fci-mode)
+
+;;find aspell and hunspell automatically
+;;http://blog.binchen.org/posts/what-s-the-best-spell-check-set-up-in-emacs.html
 (cond
  ((executable-find "aspell")
   (setq ispell-program-name "aspell")
@@ -93,15 +187,24 @@
   (setq ispell-extra-args '("-d en_US")))
  )
 
-(set-default-font "Monaco 18")
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; iswitchbuffers
+;; http://www.emacswiki.org/emacs/IswitchBuffers
+(iswitchb-mode 1)
+(setq iswitchb-default-method 'samewindow)
+(defun iswitchb-local-keys ()
+  (mapc (lambda (K)
+	  (let* ((key (car K)) (fun (cdr K)))
+	    (define-key iswitchb-mode-map (edmacro-parse-keys key) fun)))
+	'(("<right>" . iswitchb-next-match)
+	  ("<left>"  . iswitchb-prev-match)
+	  ("<up>"    . ignore             )
+	  ("<down>"  . ignore             ))))
+(add-hook 'iswitchb-define-mode-map-hook 'iswitchb-local-keys)
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;; Make Text mode the default mode for new buffers
+(setq default-major-mode 'text-mode)
 
-(put 'upcase-region 'disabled nil)
-(put 'downcase-region 'disabled nil)
-
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
+(if (eq system-type 'darwin)
+    (set-default-font "Monaco 18"))
