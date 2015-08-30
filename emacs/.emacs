@@ -123,8 +123,11 @@
 ;; python settings
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;; you should additionally install jedi, epc modules
+;; shell$ pip install jedi epc
+
 ;;(add-hook 'python-mode-hook 'jedi:ac-setup) ; if ac is all you need
-;;Note that you must set jedi:setup-keys before loading jedi.el.
+;; ;;Note that you must set jedi:setup-keys before loading jedi.el.
 (setq jedi:setup-keys t)                      ; optional
 (require 'jedi)
 (add-hook 'python-mode-hook 'jedi:setup)
@@ -136,22 +139,42 @@
 ;(add-hook 'ein:connect-mode-hook (load-theme 'hc-zenburn t))
 
 
+(require 'python-mode)
+(setq-default py-shell-name "ipython")
+(setq-default py-which-bufname "IPython")
+;;switch to the interpreter after executing code
+;(setq py-shell-switch-buffers-on-execute-p nil)
+;(setq py-switch-buffers-on-execute-p nil)
+(setq py-split-windows-on-execute-p t)
+
+
+;; ;; trying ipython tab completion: that works :)
+;; (setq
+;;  python-shell-interpreter "ipython"
+;;  python-shell-interpreter-args ""
+;;  python-shell-prompt-regexp "In \\[[0-9]+\\]: "
+;;  python-shell-prompt-output-regexp "Out\\[[0-9]+\\]: "
+;;  python-shell-completion-setup-code "from IPython.core.completerlib import module_completion"
+;;   python-shell-completion-module-string-code "';'.join(module_completion('''%s'''))\n"
+;;   python-shell-completion-string-code "';'.join(get_ipython().Completer.all_completions('''%s'''))\n"
+;;      )
+
+
 ;;;;;;;;;;;;;;;;;;;;
 ;;;; latex settings
 ;;;;;;;;;;;;;;;;;;;;
 
-;; ;;ac-math latex setting
-;; (require 'ac-math) ;; Auto-complete sources for input of mathematical symbols and latex tags
-;; (add-to-list 'ac-modes 'latex-mode)   ; make auto-complete aware of `latex-mode`
-;; (defun ac-LaTeX-mode-setup () ; add ac-sources to default ac-sources
-;;   (setq ac-sources
-;; 	(append '(ac-source-math-unicode ac-source-math-latex ac-source-latex-commands)
-;; 		ac-sources))
-;;   )
-;; (add-hook 'LaTeX-mode-hook 'ac-LaTeX-mode-setup)
-;; (global-auto-complete-mode t) 
-;; (setq ac-math-unicode-in-math-p t)
-
+;;ac-math latex setting
+(require 'ac-math) ;; Auto-complete sources for input of mathematical symbols and latex tags
+(add-to-list 'ac-modes 'latex-mode)   ; make auto-complete aware of `latex-mode`
+(defun ac-LaTeX-mode-setup () ; add ac-sources to default ac-sources
+  (setq ac-sources
+	(append '(ac-source-math-unicode ac-source-math-latex ac-source-latex-commands)
+		ac-sources))
+  )
+(add-hook 'LaTeX-mode-hook 'ac-LaTeX-mode-setup)
+(global-auto-complete-mode t) 
+(setq ac-math-unicode-in-math-p t)
 
 ;; remap all key binds that point to tex-terminate-paragraph to
 ;; my-homemade-kill-line

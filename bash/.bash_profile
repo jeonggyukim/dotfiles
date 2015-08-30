@@ -27,7 +27,7 @@ HISTFILESIZE=40000
 alias debug="set -o nounset; set -o xtrace"
 set -o notify
 set -o noclobber
-set -o ignoreeof # Disable Ctrl + D for exit
+#set -o ignoreeof # Disable Ctrl + D for exit
 
 # Reference for shopt
 # http://www.gnu.org/software/bash/manual/html_node/The-Shopt-Builtin.html
@@ -79,7 +79,7 @@ export LC_ALL=en_US.UTF-8
 export LANG=en_US.UTF-8
 
 # pythonpath
-export PYTHONPATH=$PYTHONPATH:~/Dropbox/py/module:~/Dropbox/hii/py/modules
+export PYTHONPATH=$PYTHONPATH:~/Dropbox/py/module:~/Dropbox/hii/py/modules:~/Dropbox/gmc/py/pkg
 
 # MacPorts Installer addition on 2014-08-28_at_21:45:16: adding an
 # appropriate PATH variable for use with MacPorts.
@@ -97,3 +97,4 @@ export PATH="/Users/jgkim/anaconda/bin:$PATH"
 #source ~/Applications/exelis/idl83/bin/idl_setup.bash
 export IDL_STARTUP=~/.idlstartup.pro
 
+export CSCOPE_EDITOR=`which emacs`
