@@ -39,7 +39,8 @@ fi
 
 ######################################################
 
-export TERM=xterm-256color
+#export TERM=xterm-256color
+export TERM=xterm
 export EDITOR="emacs -nw"
 export F90=gfortran
 export CSCOPE_EDITOR=`which emacs`

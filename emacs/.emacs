@@ -39,7 +39,8 @@
 (defvar local-packages
   '(auto-complete yasnippet 
     projectile epc jedi ein ein-mumamo
-    xcscope)
+    xcscope
+    ac-math)
   "A list of packages to ensure installed at launch")
 
 (defun uninstalled-packages (packages)
@@ -132,6 +133,8 @@
 (require 'ein)
 (setq ein:use-auto-complete t)
 (add-hook 'ein:connect-mode-hook 'ein:jedi-setup)
+;(add-hook 'ein:connect-mode-hook (load-theme 'hc-zenburn t))
+
 
 ;;;;;;;;;;;;;;;;;;;;
 ;;;; latex settings
@@ -209,3 +212,6 @@
 
 (if (eq system-type 'darwin)
     (set-default-font "Monaco 18"))
+
+;How to turn off color-theme on terminal frame?
+;(when (not (display-graphic-p)) (load-theme 'hc-zenburn t))
