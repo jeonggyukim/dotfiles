@@ -38,7 +38,7 @@
 
 (defvar local-packages
   '(auto-complete yasnippet 
-    projectile epc jedi ein ein-mumamo
+    projectile epc jedi ein ein-mumamo highlight-indentation
     xcscope
     ac-math)
   "A list of packages to ensure installed at launch")
@@ -133,6 +133,15 @@
 (add-hook 'python-mode-hook 'jedi:setup)
 (setq jedi:complete-on-dot t)                 ; optional
 
+;; http://tkf.github.io/emacs-jedi/latest/
+;; (jedi:goto-definition &optional other-window deftype use-cache index)
+(setq jedi:goto-definition-config
+      '((t   nil        t)        ; C-.
+        (t   nil        nil)        ; C-u C-.
+        (nil definition nil)        ; C-u C-u C-.
+        (t   definition nil)        ; C-u C-u C-u C-.
+        ...))
+
 (require 'ein)
 (setq ein:use-auto-complete t)
 (add-hook 'ein:connect-mode-hook 'ein:jedi-setup)
@@ -147,7 +156,6 @@
 ;(setq py-switch-buffers-on-execute-p nil)
 (setq py-split-windows-on-execute-p t)
 
-
 ;; ;; trying ipython tab completion: that works :)
 ;; (setq
 ;;  python-shell-interpreter "ipython"
@@ -158,6 +166,9 @@
 ;;   python-shell-completion-module-string-code "';'.join(module_completion('''%s'''))\n"
 ;;   python-shell-completion-string-code "';'.join(get_ipython().Completer.all_completions('''%s'''))\n"
 ;;      )
+
+(require 'highlight-indentation)
+;(add-hook 'python-mode-hook 'highlight-indentation-mode)
 
 
 ;;;;;;;;;;;;;;;;;;;;
