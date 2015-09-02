@@ -1,0 +1,54 @@
+#!/bin/bash
+
+# See:
+# http://tuxtweaks.com/2014/05/bash-getopts/
+# for an example of using getopts in bash.
+
+PWD=`pwd`
+ATHENADIR=/home/jgkim/athena/
+MACHINE=jgkim
+PROBLEM=hii3d
+
+if [ $MACHINE = "jgkim" ]; then
+    MAKE="/home/jgkim/dotfiles/colormake/colormake.sh" # colorize output of gcc
+fi
+
+#Initialize variables to default values.
+DEBUG="--with-cflags=opt"
+MPI=
+
+while getopts :dm FLAG; do
+  case $FLAG in
+    d)  #set option "d"
+      DEBUG="--with-cflags=debug"
+      ;;
+    m)  #set option "m"
+      MPI="--enable-mpi"
+      ;;
+    \?) #unrecognized option - show help
+      echo -e \\n"Option -${BOLD}$OPTARG${NORM} not allowed."
+      ;;
+  esac
+done
+
+shift $((OPTIND-1))  #This tells getopts to move on to the next argument.
+
+cd $ATHENADIR
+$MAKE clean -j
+$MAKE clean -j
+./configure --with-gas=hydro --with-flux=hllc --with-integrator=vl --with-order=2p --enable-point-source --with-problem=$PROBLEM $DEBUG $MPI
+
+$MAKE all -j MACHINE=$MACHINE
+
+cd $PWD
+
+echo "======================================"
+echo " Athena configure and compile done"
+echo " with options:"
+echo " - machine: $MACHINE"
+echo " - problem: $PROBLEM"
+echo " - mpi: $MPI"
+echo " - debug: $DEBUG"
+echo "======================================"
+
+exit 0

@@ -11,7 +11,8 @@
  '(setq transient-mark-mode t)
  '(show-paren-mode t)
  '(vc-follow-symlinks t)
- '(xterm-mouse-mode t))
+; '(xterm-mouse-mode t)
+)
 
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
