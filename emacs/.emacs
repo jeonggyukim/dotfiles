@@ -39,7 +39,7 @@
 
 (defvar local-packages
   '(auto-complete yasnippet 
-    projectile epc jedi ein ein-mumamo highlight-indentation
+    projectile epc jedi ein highlight-indentation python-mode
     xcscope
     ac-math)
   "A list of packages to ensure installed at launch")
@@ -58,7 +58,7 @@
 
 ;; load-path
 ;; add ~/.emacs.d directory
-(setq load-path (nconc '("~/.emacs.d") load-path)) 
+(setq load-path (nconc '("~/.emacs.d") load-path))
 (load "~/.emacs.d/util.el")
 
 ;; drag-stuff
@@ -143,9 +143,9 @@
         (t   definition nil)        ; C-u C-u C-u C-.
         ...))
 
-(require 'ein)
-(setq ein:use-auto-complete t)
-(add-hook 'ein:connect-mode-hook 'ein:jedi-setup)
+;; (require 'ein)
+;; (setq ein:use-auto-complete t)
+;; (add-hook 'ein:connect-mode-hook 'ein:jedi-setup)
 ;(add-hook 'ein:connect-mode-hook (load-theme 'hc-zenburn t))
 
 
