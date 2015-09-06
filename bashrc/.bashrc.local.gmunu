@@ -1,0 +1,4 @@
+#!/bin/bash
+
+export PATH="/home/jgkim/bin:/home/jgkim/local/bin:/home/jgkim/anaconda/bin:$PATH"
+export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:/usr/local/lib:/usr/include/c++"

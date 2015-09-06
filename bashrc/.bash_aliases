@@ -19,12 +19,10 @@ alias ems='emacs -nw ms.tex'
 alias emms='emacs ms.tex&'
 
 alias ealias='e ~/.bash_aliases'
-
 alias ebash='e ~/.bashrc'
 alias sbash='source ~/.bashrc'
 
 alias ipynb='ipython notebook'
-alias emake='~/dotfiles/colormake/colormake.sh'
 
 alias mk='make'
 alias ev='evince'
