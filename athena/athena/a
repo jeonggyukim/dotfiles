@@ -9,6 +9,7 @@ SCRIPT=`basename ${BASH_SOURCE[0]}`
 
 PWD=`pwd`
 MACHINE=gmunu
+#MACHINE=jgkim
 PROBLEM=hii3d
 
 if [ $MACHINE = "jgkim" ]; then
@@ -18,7 +19,6 @@ elif [ $MACHINE = "gmunu" ]; then
     ATHENADIR="/home/jgkim/athena/"
     MAKE="/home/jgkim/dotfiles/colormake/colormake.sh" # colorize output of gcc
 fi
-
 
 #Initialize variables to default values.
 DEBUG="--with-cflags=opt"
@@ -43,7 +43,7 @@ while getopts :dmh FLAG; do
       ;;
     m)  #set option "m"
       MPI="--enable-mpi"
-      MPIPRINT=$MPI
+      MPIPRINT="enabled"
       ;;
     h)  #show help
       HELP

@@ -15,3 +15,5 @@ export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:/home/$USER/.openmpi/lib/"
 
 #export SLUG_DIR=/home/jgkim/docs/slug2
 #. /usr/local/exelis/idl83/bin/idl_setup.bash
+
+
