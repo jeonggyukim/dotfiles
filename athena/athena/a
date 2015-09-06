@@ -1,32 +1,54 @@
 #!/bin/bash
 
-# See:
-# http://tuxtweaks.com/2014/05/bash-getopts/
-# for an example of using getopts in bash.
+#Set fonts for Help.
+NORM=`tput sgr0`
+BOLD=`tput bold`
+REV=`tput smso`
+#Set Script Name variable
+SCRIPT=`basename ${BASH_SOURCE[0]}`
 
 PWD=`pwd`
-ATHENADIR=/home/jgkim/athena/
 MACHINE=jgkim
 PROBLEM=hii3d
 
+
 if [ $MACHINE = "jgkim" ]; then
+    ATHENADIR="/home/jgkim/athena/"
     MAKE="/home/jgkim/dotfiles/colormake/colormake.sh" # colorize output of gcc
 fi
 
 #Initialize variables to default values.
 DEBUG="--with-cflags=opt"
 MPI=
+MPIPRINT="disabled"
 
-while getopts :dm FLAG; do
+#Help function
+function HELP {
+  echo -e \\n"*athena configure and compile bash script" 
+  echo "Command line switches are optional. The following switches are recognized."
+  echo "${REV}-m${NORM}  --Sets the value for configure option ${BOLD}--enable-mpi${NORM}. Default is ${BOLD}none${NORM}."
+  echo "${REV}-d${NORM}  --Sets the value for configure option ${BOLD}--cflags-debug=debug${NORM}. Default is ${BOLD}--cflags-debug=opt${NORM}."
+  echo -e "${REV}-h${NORM}  --Displays this help message. No further functions are performed."\\n
+  echo -e "Example: ${BOLD}./$SCRIPT -dm${NORM}"\\n
+  exit 1
+}
+
+while getopts :dmh FLAG; do
   case $FLAG in
     d)  #set option "d"
       DEBUG="--with-cflags=debug"
       ;;
     m)  #set option "m"
       MPI="--enable-mpi"
+      MPIPRINT=$MPI
+      ;;
+    h)  #show help
+      HELP
+      exit 0
       ;;
     \?) #unrecognized option - show help
-      echo -e \\n"Option -${BOLD}$OPTARG${NORM} not allowed."
+      echo -e "Option -${BOLD}$OPTARG${NORM} not allowed."
+      exit 1
       ;;
   esac
 done
@@ -42,13 +64,12 @@ $MAKE all -j MACHINE=$MACHINE
 
 cd $PWD
 
-echo "======================================"
-echo " Athena configure and compile done"
-echo " with options:"
+echo "================================================"
+echo " Athena configure and compile done with options:"
 echo " - machine: $MACHINE"
 echo " - problem: $PROBLEM"
-echo " - mpi: $MPI"
+echo " - mpi: $MPIPRINT"
 echo " - debug: $DEBUG"
-echo "======================================"
+echo "================================================"
 
 exit 0
