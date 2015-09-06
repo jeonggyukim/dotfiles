@@ -8,14 +8,17 @@ REV=`tput smso`
 SCRIPT=`basename ${BASH_SOURCE[0]}`
 
 PWD=`pwd`
-MACHINE=jgkim
+MACHINE=gmunu
 PROBLEM=hii3d
-
 
 if [ $MACHINE = "jgkim" ]; then
     ATHENADIR="/home/jgkim/athena/"
     MAKE="/home/jgkim/dotfiles/colormake/colormake.sh" # colorize output of gcc
+elif [ $MACHINE = "gmunu" ]; then
+    ATHENADIR="/home/jgkim/athena/"
+    MAKE="/home/jgkim/dotfiles/colormake/colormake.sh" # colorize output of gcc
 fi
+
 
 #Initialize variables to default values.
 DEBUG="--with-cflags=opt"
