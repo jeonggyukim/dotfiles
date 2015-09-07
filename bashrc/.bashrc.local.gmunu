@@ -6,3 +6,6 @@ export PYTHONPATH=$PYTHONPATH:/scratch/jgkim/Dropbox/py/module:/scratch/jgkim/Dr
 
 alias qstat='qstat -u "*"'
 alias qstatg='qstat -g c'
+
+# run dropbox 
+dropbox.py start

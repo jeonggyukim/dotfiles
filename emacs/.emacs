@@ -79,8 +79,8 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; yasnippet
-(require 'yasnippet)
-(yas-global-mode 1) ; yasnippet is always on
+;(require 'yasnippet)
+;(yas-global-mode 1) ; yasnippet is always on
 
 ;; start auto-complete with emacs
 (require 'auto-complete)
@@ -100,14 +100,14 @@
 
 ;; to deal with complexity between yasnippet and auto-complete
 ;; see http://emacs.stackexchange.com/questions/2767/auto-complete-stops-working-with-c-files
-(setq ac-source-yasnippet nil)
+;(setq ac-source-yasnippet nil)
 
-(define-key yas-minor-mode-map (kbd "<tab>") nil)
-(define-key yas-minor-mode-map (kbd "TAB") nil)
-(define-key yas-minor-mode-map (kbd "<backtab>") 'yas-expand)
+;(define-key yas-minor-mode-map (kbd "<tab>") nil)
+;(define-key yas-minor-mode-map (kbd "TAB") nil)
+;(define-key yas-minor-mode-map (kbd "<backtab>") 'yas-expand)
 ; modify some keys
-(ac-set-trigger-key "TAB")
-(ac-set-trigger-key "<tab>")
+;(ac-set-trigger-key "TAB")
+;(ac-set-trigger-key "<tab>")
 
 ;; cscope
 (add-to-list 'load-path "~/.emacs.d/xcscope-20140510.1437")
