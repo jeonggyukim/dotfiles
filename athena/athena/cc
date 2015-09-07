@@ -1,15 +1,22 @@
 #!/bin/bash
 
+#Set Script Name variable
+SCRIPT=`basename ${BASH_SOURCE[0]}`
 #Set fonts for Help.
 NORM=`tput sgr0`
 BOLD=`tput bold`
 REV=`tput smso`
-#Set Script Name variable
-SCRIPT=`basename ${BASH_SOURCE[0]}`
 
 PWD=`pwd`
-MACHINE=gmunu
-#MACHINE=jgkim
+
+# Set machine name
+MACHINE=$(uname -n)
+if [ $MACHINE == "jgkim-astro" ]; then
+    MACHINE="jgkim"
+elif [ $MACHINE == "gmunu.snu.ac.kr" ]; then
+    MACHINE="gmunu"
+fi
+
 PROBLEM=hii3d
 
 if [ $MACHINE = "jgkim" ]; then
@@ -61,7 +68,8 @@ shift $((OPTIND-1))  #This tells getopts to move on to the next argument.
 cd $ATHENADIR
 $MAKE clean -j
 $MAKE clean -j
-./configure --with-gas=hydro --with-flux=hllc --with-integrator=vl --with-order=2p --enable-point-source --with-problem=$PROBLEM $DEBUG $MPI
+./configure --with-gas=hydro --with-flux=hllc --with-integrator=vl \
+--with-order=2p --enable-point-source --with-problem=$PROBLEM $DEBUG $MPI
 
 $MAKE all -j MACHINE=$MACHINE
 
