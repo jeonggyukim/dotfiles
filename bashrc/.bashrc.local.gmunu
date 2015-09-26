@@ -1,8 +1,11 @@
 #!/bin/bash
 
-export PATH="/home/jgkim/bin:/home/jgkim/local/bin:/home/jgkim/anaconda/bin:$PATH"
+export PATH="/home/jgkim/bin:/home/jgkim/local/bin:/scratch/jgkim/Dropbox/gmc/py/pkg/athenapy:/home/jgkim/anaconda/bin:$PATH"
 export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:/usr/local/lib:/usr/include/c++"
 export PYTHONPATH=$PYTHONPATH:/scratch/jgkim/Dropbox/py/module:/scratch/jgkim/Dropbox/gmc/py/pkg
 
 alias qstat='qstat -u "*"'
 alias qstatg='qstat -g c'
+
+# run dropbox 
+dropbox.py start

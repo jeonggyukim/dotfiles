@@ -10,16 +10,8 @@
  '(mouse-wheel-mode t)
  '(setq transient-mark-mode t)
  '(show-paren-mode t)
- '(vc-follow-symlinks t)
-; '(xterm-mouse-mode t)
-)
+ '(vc-follow-symlinks t))
 
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Package Setup
@@ -79,8 +71,8 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; yasnippet
-(require 'yasnippet)
-(yas-global-mode 1) ; yasnippet is always on
+;(require 'yasnippet)
+;(yas-global-mode 1) ; yasnippet is always on
 
 ;; start auto-complete with emacs
 (require 'auto-complete)
@@ -100,14 +92,14 @@
 
 ;; to deal with complexity between yasnippet and auto-complete
 ;; see http://emacs.stackexchange.com/questions/2767/auto-complete-stops-working-with-c-files
-(setq ac-source-yasnippet nil)
+;(setq ac-source-yasnippet nil)
 
-(define-key yas-minor-mode-map (kbd "<tab>") nil)
-(define-key yas-minor-mode-map (kbd "TAB") nil)
-(define-key yas-minor-mode-map (kbd "<backtab>") 'yas-expand)
+;(define-key yas-minor-mode-map (kbd "<tab>") nil)
+;(define-key yas-minor-mode-map (kbd "TAB") nil)
+;(define-key yas-minor-mode-map (kbd "<backtab>") 'yas-expand)
 ; modify some keys
-(ac-set-trigger-key "TAB")
-(ac-set-trigger-key "<tab>")
+;(ac-set-trigger-key "TAB")
+;(ac-set-trigger-key "<tab>")
 
 ;; cscope
 (add-to-list 'load-path "~/.emacs.d/xcscope-20140510.1437")
@@ -245,8 +237,20 @@
 ;; Make Text mode the default mode for new buffers
 (setq default-major-mode 'text-mode)
 
+
+;; set default fonts
 (if (eq system-type 'darwin)
     (set-default-font "Monaco 18"))
+
+(setq x-alt-keysym 'meta)
+
+(if (string= system-name "gmunu.snu.ac.kr")
+    (custom-set-faces
+     '(default ((t (:family "Courier 10 Pitch"
+			    :foundry "bitstream"
+			    :slant normal :weight normal
+			    :height 120 :width normal))))))
+
 
 ;How to turn off color-theme on terminal frame?
 ;(when (not (display-graphic-p)) (load-theme 'hc-zenburn t))
