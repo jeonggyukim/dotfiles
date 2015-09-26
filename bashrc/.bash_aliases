@@ -22,6 +22,7 @@ alias ealias='e ~/.bash_aliases'
 alias ebash='e ~/.bashrc'
 alias sbash='source ~/.bashrc'
 
+alias ipy='ipython'
 alias ipynb='ipython notebook'
 alias ipynbnb='ipython notebook --no-browser'
 
