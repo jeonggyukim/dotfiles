@@ -185,7 +185,12 @@
 (define-key (current-global-map) [remap tex-terminate-paragraph]
 'newline-and-indent)
 
-(setq tex-mode-hook 'turn-on-auto-fill)
+;;; Set auto-fill and abbreviation for Text Mode
+(setq tex-mode-hook 
+      '(lambda nil 
+         (setq fill-column 70)
+         (auto-fill-mode 1)
+         (abbrev-mode 1)))
 (if (display-graphic-p)
     (x-focus-frame nil))
 
@@ -193,7 +198,6 @@
 ;; (setq exec-path (append '("/usr/texbin") exec-path))
 ;; (load "auctex.el" nil t t)
 ;; (load "preview-latex.el" nil t t)
-
 
 ;;fill-column indicator
 ;;for some unknown reason, add-hook c-mode-hook turn-on-fci-mode does not work
@@ -238,7 +242,7 @@
 (setq default-major-mode 'text-mode)
 
 
-;; set default fonts
+;; set default fonts for macosx
 (if (eq system-type 'darwin)
     (set-default-font "Monaco 18"))
 
