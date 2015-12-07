@@ -198,7 +198,7 @@
 ;;fill-column indicator
 ;;for some unknown reason, add-hook c-mode-hook turn-on-fci-mode does not work
 ;;if it appears before c-mode settings
-(setq-default fill-column 80)
+(setq-default fill-column 70)
 ;(load "~/.emacs.d/fill-column-indicator.el")
 (require 'fill-column-indicator)
 (setq fci-rule-color "darkblue")
