@@ -54,6 +54,7 @@ defsysv, '!dli_fig','~/Dropbox/H2/notes/ApJ_ReplyToReferee/'
 defsysv, '!h2_dataidl','~/Dropbox/H2/dataidl/'
 defsysv, '!h2_fig','~/Dropbox/hii/notes/ms0.1/'
 defsysv, '!dir_hii','~/Dropbox/hii/'
+defsysv, '!dir_gmc','~/Dropbox/gmc/'
 defsysv, '!dir_ifront','/data/research/IFront/'
 
 
