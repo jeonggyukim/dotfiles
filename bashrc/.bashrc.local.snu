@@ -13,6 +13,10 @@ export TEXMFLOCAL=/home/jgkim/.texmf
 export PATH="$PATH:/home/jgkim/.openmpi/bin"
 export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:/home/$USER/.openmpi/lib/:/home/jgkim/anaconda/pkgs/hdf5-1.8.15.1-1/lib"
 
+# VISIT
+
+export PATH="$PATH:/usr/local/visit/bin"
+
 #export SLUG_DIR=/home/jgkim/docs/slug2
 #. /usr/local/exelis/idl83/bin/idl_setup.bash
 
