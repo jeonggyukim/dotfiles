@@ -163,6 +163,9 @@
 (require 'highlight-indentation)
 ;(add-hook 'python-mode-hook 'highlight-indentation-mode)
 
+;; Python Hook
+(add-hook 'python-mode-hook '(lambda () 
+ (setq python-indent 2)))
 
 ;;;;;;;;;;;;;;;;;;;;
 ;;;; latex settings
