@@ -79,7 +79,7 @@ export LC_ALL=en_US.UTF-8
 export LANG=en_US.UTF-8
 
 # pythonpath
-export PYTHONPATH=$PYTHONPATH:~/Dropbox/py/module:~/Dropbox/hii/py/modules:~/Dropbox/gmc/py/pkg
+export PYTHONPATH=$PYTHONPATH:~/Dropbox/py/module:~/Dropbox/hii/py/modules:~/Dropbox/gmc/py/pkg:~/Dropbox/gmc/py/spyder
 
 # MacPorts Installer addition on 2014-08-28_at_21:45:16: adding an
 # appropriate PATH variable for use with MacPorts.
