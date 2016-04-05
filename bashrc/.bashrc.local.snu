@@ -4,7 +4,7 @@ export LD_LIBRARY_PATH=/usr/local/lib:/usr/lib:/opt/Healpix_3.20/lib
 
 # added by Anaconda 2.2.0 installer
 export PATH="/home/jgkim/Dropbox/gmc/py/pkg/athenapy:/home/jgkim/anaconda/bin:$PATH"
-export PYTHONPATH=$PYTHONPATH:~/Dropbox/py/module:~/Dropbox/hii/py/modules:~/Dropbox/gmc/py/pkg
+export PYTHONPATH=$PYTHONPATH:~/Dropbox/py/module:~/Dropbox/hii/py/modules:~/Dropbox/gmc/py/pkg:~/Dropbox/gmc/py/spyder:
 
 # texmf
 export TEXMFLOCAL=/home/jgkim/.texmf
@@ -12,6 +12,10 @@ export TEXMFLOCAL=/home/jgkim/.texmf
 # OPEN MPI
 export PATH="$PATH:/home/jgkim/.openmpi/bin"
 export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:/home/$USER/.openmpi/lib/:/home/jgkim/anaconda/pkgs/hdf5-1.8.15.1-1/lib"
+
+# VISIT
+
+export PATH="$PATH:/usr/local/visit/bin"
 
 #export SLUG_DIR=/home/jgkim/docs/slug2
 #. /usr/local/exelis/idl83/bin/idl_setup.bash
