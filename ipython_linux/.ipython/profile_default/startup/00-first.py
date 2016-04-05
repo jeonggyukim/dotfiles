@@ -1,6 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
-import os,sys,pprint,glob
+import os,sys
 
 lunit		= 3.085678e18	# length unit [pc]
 tunit		= 3.15576e13	# time unit   [Myr]
