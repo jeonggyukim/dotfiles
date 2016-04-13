@@ -67,11 +67,10 @@ if [ -f /etc/bash_completion ] && ! shopt -oq posix; then
     . /etc/bash_completion
 fi
 
-
+## For git settings
 source $HOME/.git-completion.bash
 source $HOME/.git-prompt.sh
 PS1='[\u@\h \W$(__git_ps1 " (%s)")]\$ '   # adjust this to your prompt liking
-
 
 # For ipython notebook locale
 # Ref: http://stackoverflow.com/questions/15526996/ipython-notebook-locale-error
@@ -79,22 +78,18 @@ export LC_ALL=en_US.UTF-8
 export LANG=en_US.UTF-8
 
 # pythonpath
-export PYTHONPATH=$PYTHONPATH:~/Dropbox/py/module:~/Dropbox/hii/py/modules:~/Dropbox/gmc/py/pkg:~/Dropbox/gmc/py/spyder
-
-# MacPorts Installer addition on 2014-08-28_at_21:45:16: adding an
-# appropriate PATH variable for use with MacPorts.
-export PATH="/opt/local/bin:/opt/local/sbin:$PATH"
+export PYTHONPATH=$PYTHONPATH:~/Dropbox/gmc/py/athpy_gmc
 
 # bookmarks.sh script
 # Note that the use of bookmarks.sh script requires bash4.0+
 source ~/dotfiles/bookmarks/bookmarks.sh
 export PATH="/usr/local/bin:/Users/jgkim/bin:$PATH"
 
-# added by Anaconda 2.0.1 installer
+export CSCOPE_EDITOR=`which emacs`
+
+# added by Anaconda2 4.0.0 installer
 export PATH="/Users/jgkim/anaconda/bin:$PATH"
 
-# idl setup
-source ~/Applications/exelis/idl83/bin/idl_setup.bash
-export IDL_STARTUP=~/.idlstartup.pro
-
-export CSCOPE_EDITOR=`which emacs`
+## idl setup
+#source ~/Applications/exelis/idl83/bin/idl_setup.bash
+#export IDL_STARTUP=~/.idlstartup.pro
