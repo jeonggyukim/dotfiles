@@ -50,12 +50,12 @@
 
 ;; load-path
 ;; add ~/.emacs.d directory
-(setq load-path (nconc '("~/.emacs.d") load-path))
+;;(setq load-path (nconc '("~/.emacs.d") load-path))
 (load "~/.emacs.d/util.el")
 
 ;; drag-stuff
 ;; https://github.com/rejeep/drag-stuff.el
-;; (load "~/.emacs.d/drag-stuff.el")
+(load "~/.emacs.d/drag-stuff.el")
 (require 'drag-stuff)
 (drag-stuff-global-mode 1)
 
@@ -102,7 +102,7 @@
 ;(ac-set-trigger-key "<tab>")
 
 ;; cscope
-(add-to-list 'load-path "~/.emacs.d/xcscope-20140510.1437")
+;;(add-to-list 'load-path "~/.emacs.d/xcscope-20140510.1437")
 (require 'xcscope)
 (cscope-setup)
 (setq cscope-do-not-update-database t)
@@ -205,8 +205,8 @@
 ;;fill-column indicator
 ;;for some unknown reason, add-hook c-mode-hook turn-on-fci-mode does not work
 ;;if it appears before c-mode settings
-(setq-default fill-column 70)
-;(load "~/.emacs.d/fill-column-indicator.el")
+(setq-default fill-column 80)
+(load "~/.emacs.d/fill-column-indicator.el")
 (require 'fill-column-indicator)
 (setq fci-rule-color "darkblue")
 (setq fci-rule-width 1)
@@ -225,25 +225,9 @@
   (setq ispell-extra-args '("-d en_US")))
  )
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; iswitchbuffers
-;; http://www.emacswiki.org/emacs/IswitchBuffers
-(iswitchb-mode 1)
-(setq iswitchb-default-method 'samewindow)
-(defun iswitchb-local-keys ()
-  (mapc (lambda (K)
-	  (let* ((key (car K)) (fun (cdr K)))
-	    (define-key iswitchb-mode-map (edmacro-parse-keys key) fun)))
-	'(("<right>" . iswitchb-next-match)
-	  ("<left>"  . iswitchb-prev-match)
-	  ("<up>"    . ignore             )
-	  ("<down>"  . ignore             ))))
-(add-hook 'iswitchb-define-mode-map-hook 'iswitchb-local-keys)
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; Make Text mode the default mode for new buffers
 (setq default-major-mode 'text-mode)
-
 
 ;; set default fonts for macosx
 (if (eq system-type 'darwin)
