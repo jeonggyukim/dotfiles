@@ -1,11 +1,10 @@
 #!/bin/bash
 
+export CSCOPE_EDITOR=$(which "emacs")
+export PATH="/scratch/jgkim/gmc/athpy/athpy:$PATH"
 export PATH="/home/jgkim/bin:/home/jgkim/local/bin:/home/jgkim/anaconda2/bin:$PATH"
 export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:/usr/local/lib:/usr/include/c++"
 export PYTHONPATH=$PYTHONPATH:/scratch/jgkim/gmc/athpy_gmc
 
 alias qstat='qstat -u "*"'
 alias qstatg='qstat -g c'
-
-# run dropbox 
-#dropbox.py start
