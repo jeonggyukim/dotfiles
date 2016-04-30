@@ -23,8 +23,8 @@ alias ebash='e ~/.bashrc'
 alias sbash='source ~/.bashrc'
 
 alias ipy='ipython'
-alias ipynb='ipython notebook'
-alias ipynbnb='ipython notebook --no-browser'
+alias jpynb='jupyter notebook'
+alias jpynbnb='jupyter notebook --no-browser'
 
 alias mk='make'
 alias ev='evince'
