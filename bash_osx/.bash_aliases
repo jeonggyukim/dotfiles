@@ -62,4 +62,4 @@ alias quitfinderon='defaults write com.apple.finder QuitMenuItem -bool YES; kill
 alias quitfinderoff='defaults write com.apple.finder QuitMenuItem -bool NO; killall Finder'
 
 
-defaults write org.python.python NSAppSleepDisabled -bool YES
+#defaults write org.python.python NSAppSleepDisabled -bool YES
