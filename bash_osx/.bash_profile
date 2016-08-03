@@ -88,8 +88,11 @@ export PATH="/usr/local/bin:/Users/jgkim/bin:$PATH"
 export CSCOPE_EDITOR=`which emacs`
 
 # added by Anaconda2 4.0.0 installer
-export PATH="/Users/jgkim/anaconda/bin:$PATH"
+#export PATH="/Users/jgkim/anaconda/bin:$PATH"
 
 ## idl setup
 #source ~/Applications/exelis/idl83/bin/idl_setup.bash
 #export IDL_STARTUP=~/.idlstartup.pro
+
+# added by Anaconda2 4.0.0 installer
+export PATH="/Users/jgkim/anaconda/bin:$PATH"

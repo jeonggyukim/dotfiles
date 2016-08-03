@@ -120,15 +120,15 @@
 ;; you should additionally install jedi, epc modules
 ;; shell$ pip install jedi epc
 
-;;(add-hook 'python-mode-hook 'jedi:ac-setup) ; if ac is all you need
-;; ;;Note that you must set jedi:setup-keys before loading jedi.el.
+(add-hook 'python-mode-hook 'jedi:ac-setup) ; if ac is all you need
+;;Note that you must set jedi:setup-keys before loading jedi.el.
 (setq jedi:setup-keys t)                      ; optional
 (require 'jedi)
 (add-hook 'python-mode-hook 'jedi:setup)
 (setq jedi:complete-on-dot t)                 ; optional
 
-;; http://tkf.github.io/emacs-jedi/latest/
-;; (jedi:goto-definition &optional other-window deftype use-cache index)
+;; ;; http://tkf.github.io/emacs-jedi/latest/
+;; ;; (jedi:goto-definition &optional other-window deftype use-cache index)
 (setq jedi:goto-definition-config
       '((t   nil        t)        ; C-.
         (t   nil        nil)        ; C-u C-.
@@ -136,19 +136,19 @@
         (t   definition nil)        ; C-u C-u C-u C-.
         ...))
 
-;; (require 'ein)
-;; (setq ein:use-auto-complete t)
-;; (add-hook 'ein:connect-mode-hook 'ein:jedi-setup)
-;(add-hook 'ein:connect-mode-hook (load-theme 'hc-zenburn t))
+(require 'ein)
+(setq ein:use-auto-complete t)
+(add-hook 'ein:connect-mode-hook 'ein:jedi-setup)
+;;(add-hook 'ein:connect-mode-hook (load-theme 'hc-zenburn t))
 
 
-(require 'python-mode)
-(setq-default py-shell-name "ipython")
-(setq-default py-which-bufname "IPython")
+;; (require 'python-mode)
+;; (setq-default py-shell-name "ipython")
+;; (setq-default py-which-bufname "IPython")
 ;;switch to the interpreter after executing code
 ;(setq py-shell-switch-buffers-on-execute-p nil)
 ;(setq py-switch-buffers-on-execute-p nil)
-(setq py-split-windows-on-execute-p t)
+;; (setq py-split-windows-on-execute-p t)
 
 ;; ;; trying ipython tab completion: that works :)
 ;; (setq
