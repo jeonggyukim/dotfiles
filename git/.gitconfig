@@ -9,7 +9,8 @@
 	helper = cache --timeout=7200
 [alias]
 	st = status
-	slog = log --oneline --topo-order --graph
+#	slog = log --oneline --topo-order --graph
+	slog = log --oneline --topo-order --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --date=relative
 
 [push]
 	default = simple

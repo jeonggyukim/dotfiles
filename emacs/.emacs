@@ -162,7 +162,7 @@
 ;;      )
 
 (require 'highlight-indentation)
-(add-hook 'python-mode-hook 'highlight-indentation-mode)
+;(add-hook 'python-mode-hook 'highlight-indentation-mode)
 
 ;; Python Hook
 (add-hook 'python-mode-hook '(lambda () 
