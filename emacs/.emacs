@@ -32,7 +32,7 @@
 (defvar local-packages
   '(auto-complete yasnippet 
     projectile epc jedi ein highlight-indentation python-mode
-    xcscope
+    xcscope anzu
     ac-math)
   "A list of packages to ensure installed at launch")
 
@@ -59,6 +59,24 @@
 (require 'drag-stuff)
 (drag-stuff-global-mode 1)
 
+
+;; anzu sample configuration
+;; https://github.com/syohex/emacs-anzu
+(require 'anzu)
+(global-anzu-mode +1)
+
+(set-face-attribute 'anzu-mode-line nil
+                    :foreground "yellow" :weight 'bold)
+
+(custom-set-variables
+ '(anzu-mode-lighter "")
+ '(anzu-deactivate-region t)
+ '(anzu-search-threshold 1000)
+ '(anzu-replace-threshold 50)
+ '(anzu-replace-to-string-separator " => "))
+
+(define-key isearch-mode-map [remap isearch-query-replace]  #'anzu-isearch-query-replace)
+(define-key isearch-mode-map [remap isearch-query-replace-regexp] #'anzu-isearch-query-replace-regexp)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; c-mode settings following video tutorials:
@@ -162,7 +180,18 @@
 ;;      )
 
 (require 'highlight-indentation)
-(add-hook 'python-mode-hook 'highlight-indentation-mode)
+;(add-hook 'python-mode-hook 'highlight-indentation-mode)
+
+(defun aj-toggle-fold ()
+  "Toggle fold all lines larger than indentation on current line"
+  (interactive)
+  (let ((col 1))
+    (save-excursion
+      (back-to-indentation)
+      (setq col (+ 1 (current-column)))
+      (set-selective-display
+       (if selective-display nil (or col 1))))))
+(global-set-key [(M C c)] 'aj-toggle-fold)
 
 ;; Python Hook
 (add-hook 'python-mode-hook '(lambda () 

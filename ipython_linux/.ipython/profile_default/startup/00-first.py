@@ -1,7 +1,6 @@
+import os,sys,glob
 import numpy as np
+import pandas as pd
 import matplotlib.pyplot as plt
-import os,sys
 
-lunit		= 3.085678e18	# length unit [pc]
-tunit		= 3.15576e13	# time unit   [Myr]
-dunit		= 2.3416704878e-24 # density unit in cgs [g/cm^3/H]
+pd.set_option('display.float_format', '{:.3g}'.format)
