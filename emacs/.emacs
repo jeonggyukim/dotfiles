@@ -138,8 +138,8 @@
 ;; you should additionally install jedi, epc modules
 ;; shell$ pip install jedi epc
 
-;;(add-hook 'python-mode-hook 'jedi:ac-setup) ; if ac is all you need
-;; ;;Note that you must set jedi:setup-keys before loading jedi.el.
+(add-hook 'python-mode-hook 'jedi:ac-setup) ; if ac is all you need
+;;Note that you must set jedi:setup-keys before loading jedi.el.
 (setq jedi:setup-keys t)                      ; optional
 (require 'jedi)
 (add-hook 'python-mode-hook 'jedi:setup)
