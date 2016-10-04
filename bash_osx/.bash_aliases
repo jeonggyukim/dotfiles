@@ -43,6 +43,8 @@ alias ev='evince'
 alias mk='make'
 
 alias ipynb='ipython notebook'
+alias jpynb='jupyter notebook'
+alias jpynbnb='jupyter notebook --no-browser'
 
 alias eem='emacs -nw ~/.emacs'
 alias ebash='emacs -nw ~/.bash_profile'

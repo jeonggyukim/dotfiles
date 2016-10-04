@@ -195,7 +195,7 @@
 
 ;; Python Hook
 (add-hook 'python-mode-hook '(lambda () 
- (setq python-indent 2)))
+ (setq python-indent 4)))
 
 ;;;;;;;;;;;;;;;;;;;;
 ;;;; latex settings
