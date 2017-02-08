@@ -32,7 +32,7 @@
 (defvar local-packages
   '(auto-complete yasnippet 
     projectile epc jedi ein highlight-indentation python-mode
-    xcscope anzu
+    xcscope anzu neotree
     ac-math)
   "A list of packages to ensure installed at launch")
 
@@ -254,6 +254,16 @@
   (setq ispell-program-name "hunspell")
   (setq ispell-extra-args '("-d en_US")))
  )
+
+;;; neotree color
+(custom-set-faces
+ '(col-highlight ((t (:background "color-233"))))
+ '(hl-line ((t (:background "color-233"))))
+ '(lazy-highlight ((t (:background "black" :foreground "white" :underline t))))
+ '(neo-dir-link-face ((t (:foreground "cyan"))))
+ '(neo-file-link-face ((t (:foreground "white")))))
+(custom-set-variables)
+(global-set-key [f8] 'neotree-toggle)
 
 
 ;; Make Text mode the default mode for new buffers
