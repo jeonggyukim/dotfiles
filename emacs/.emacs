@@ -10,29 +10,48 @@
  '(mouse-wheel-mode t)
  '(setq transient-mark-mode t)
  '(show-paren-mode t)
- '(vc-follow-symlinks t))
+ '(vc-follow-symlinks t)
+ '(anzu-mode-lighter "")
+ '(anzu-deactivate-region t)
+ '(anzu-search-threshold 1000)
+ '(anzu-replace-threshold 50)
+ '(anzu-replace-to-string-separator " => ")
+)
 
+
+;; helpful references
+;; https://gitlab.com/buildfunthings/emacs-config/blob/master/loader.org
+
+(setq user-full-name "Jeong-Gyu Kim")
+(setq user-mail-address "jgkim@astro.snu.ac.kr")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Package Setup
 ;; A bit old but good article on package management in emacs:
 ;; http://batsov.com/articles/2012/02/19/\
 ;; package-management-in-emacs-the-good-the-bad-and-the-ugly/
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; you can update all of the installed packages
 ;; by using the “U” key in the packages list view
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+
+;; Because the default setting for package-archives is to use the HTTP access to
+;; the GNU archive, I set the variable to `nil` before adding the HTTPS
+;; variants.
 (require 'package) ;; start package.el with emacs
-(add-to-list 'package-archives
-	     '("melpa" . "http://melpa.milkbox.net/packages/") t)
-;(add-to-list 'package-archives
-;             '("marmalade" . "http://marmalade-repo.org/packages/") t)
+(defvar gnu '("gnu" . "https://elpa.gnu.org/packages/"))
+(defvar melpa '("melpa" . "https://melpa.org/packages/"))
+(defvar melpa-stable '("melpa-stable" . "https://stable.melpa.org/packages/"))
+(setq package-archives nil)
+(add-to-list 'package-archives melpa-stable t)
+(add-to-list 'package-archives melpa t)
+(add-to-list 'package-archives gnu t)
 (package-initialize) ; initialize package.el
 
 (defvar local-packages
   '(auto-complete yasnippet 
     projectile epc jedi ein highlight-indentation python-mode
-    xcscope anzu smex
+    xcscope anzu neotree smex
     ac-math)
   "A list of packages to ensure installed at launch")
 
@@ -47,7 +66,6 @@
       (dolist (p need-to-install)
 	(package-install p)))))
 
-
 ;; load-path
 ;; add ~/.emacs.d directory
 ;;(setq load-path (nconc '("~/.emacs.d") load-path))
@@ -59,22 +77,18 @@
 (require 'drag-stuff)
 (drag-stuff-global-mode 1)
 
+;; be sure to just ask for y/n instead of yes/no
+(fset 'yes-or-no-p 'y-or-n-p)
 
-;; anzu sample configuration
+;;don’t kill-buffer, kill-this-buffer instead
+(global-set-key (kbd "C-x k") 'kill-this-buffer)
+
+;; anzu configuration
 ;; https://github.com/syohex/emacs-anzu
 (require 'anzu)
 (global-anzu-mode +1)
-
 (set-face-attribute 'anzu-mode-line nil
-                    :foreground "yellow" :weight 'bold)
-
-(custom-set-variables
- '(anzu-mode-lighter "")
- '(anzu-deactivate-region t)
- '(anzu-search-threshold 1000)
- '(anzu-replace-threshold 50)
- '(anzu-replace-to-string-separator " => "))
-
+		    :foreground "yellow" :weight 'bold)
 (define-key isearch-mode-map [remap isearch-query-replace]  #'anzu-isearch-query-replace)
 (define-key isearch-mode-map [remap isearch-query-replace-regexp] #'anzu-isearch-query-replace-regexp)
 
@@ -88,14 +102,16 @@
 ;; http://youtu.be/Ib914gNr0ys
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;; yasnippet
-;(require 'yasnippet)
-;(yas-global-mode 1) ; yasnippet is always on
+;;yasnippet
+(require 'yasnippet)
+(yas-global-mode 1) ; yasnippet is always on
 
 ;; start auto-complete with emacs
 (require 'auto-complete)
 (require 'auto-complete-config) ;; do default config for auto-complete
 (ac-config-default)
+(setq ac-auto-show-menu    1.0)
+(setq ac-delay             1.0)
 
 ;;let's define a function which initializes auto-complete-c-headers and gets
 ;;called for c/c++ hooks
@@ -122,20 +138,18 @@
 ;(ac-set-trigger-key "<tab>")
 
 ;; cscope
-;;(add-to-list 'load-path "~/.emacs.d/xcscope-20140510.1437")
 (require 'xcscope)
 (cscope-setup)
 (setq cscope-do-not-update-database t)
 
 ;; iedit has a bug (in Mac)
-(define-key global-map (kbd "C-c ;") 'iedit-mode) 
+(define-key global-map (kbd "C-c ;") 'iedit-mode)
 
 (which-function-mode 1)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; python settings
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 
 ;; you should additionally install jedi, epc modules
 ;; shell$ pip install jedi epc
@@ -219,6 +233,20 @@
 (global-auto-complete-mode t) 
 (setq ac-math-unicode-in-math-p t)
 
+;; (setenv "PATH" (concat "/usr/texbin:" (getenv "PATH")))
+;; (setq exec-path (append '("/usr/texbin") exec-path))
+;; (load "auctex.el" nil t t)
+;; (load "preview-latex.el" nil t t)
+
+;; reftex
+;; Just type C-c = and Emacs displays it
+;; If you use AUCTeX (you probably do; if you don't, you probably should):
+;(add-hook 'LaTeX-mode-hook 'turn-on-reftex)
+;(setq reftex-plug-into-AUCTeX t)
+
+;; If you do not:
+(add-hook 'latex-mode-hook 'turn-on-reftex)
+
 ;; remap all key binds that point to tex-terminate-paragraph to
 ;; my-homemade-kill-line
 (define-key (current-global-map) [remap tex-terminate-paragraph]
@@ -233,11 +261,19 @@
 (if (display-graphic-p)
     (x-focus-frame nil))
 
-;; (setenv "PATH" (concat "/usr/texbin:" (getenv "PATH")))
-;; (setq exec-path (append '("/usr/texbin") exec-path))
-;; (load "auctex.el" nil t t)
-;; (load "preview-latex.el" nil t t)
+;;; macros
+(fset 'latexeq ;; type Equation~\eqref{f:}
+   [?E ?q ?u ?a ?t ?i ?o ?n ?~ ?\\ ?e ?q ?r ?e ?f ?\{ ?e ?: ?\} left])
+(add-hook 'LaTeX-mode-hook
+          (lambda () (local-set-key (kbd "C-c e") #'run-latexmk)))
+(fset 'latexfig ;; type Figure~\ref{f:}
+   [?F ?i ?g ?u ?r ?e ?~ ?\\ ?r ?e ?f ?\{ ?f ?: ?\} left])
+(add-hook 'LaTeX-mode-hook
+          (lambda () (local-set-key (kbd "C-c f") #'run-latexmk)))
+;(global-set-key (kbd "C-c e") 'latexeq)
+;(global-set-key (kbd "C-c f") 'latexfig)
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;fill-column indicator
 ;;for some unknown reason, add-hook c-mode-hook turn-on-fci-mode does not work
 ;;if it appears before c-mode settings
@@ -261,6 +297,15 @@
   (setq ispell-extra-args '("-d en_US")))
  )
 
+;;; neotree color
+(custom-set-faces
+ '(col-highlight ((t (:background "color-233"))))
+ '(hl-line ((t (:background "color-233"))))
+ '(lazy-highlight ((t (:background "black" :foreground "white" :underline t))))
+ '(neo-dir-link-face ((t (:foreground "cyan"))))
+ '(neo-file-link-face ((t (:foreground "white")))))
+(custom-set-variables)
+(global-set-key [f8] 'neotree-toggle)
 
 ;; Make Text mode the default mode for new buffers
 (setq default-major-mode 'text-mode)
@@ -289,6 +334,13 @@
 			    :slant normal :weight normal
 			    :height 120 :width normal))))))
 
-
+;;; not used
 ;How to turn off color-theme on terminal frame?
-;(when (not (display-graphic-p)) (load-theme 'hc-zenburn t))
+;(when (not (display-graphic-p)) (load-theme 'wombat))
+;;(load-theme 'wombat)
+
+
+;;(add-to-list 'package-archives
+;;	     '("melpa" . "http://melpa.milkbox.net/packages/") t)
+;;(add-to-list 'package-archives
+;;           '("marmalade" . "http://marmalade-repo.org/packages/") t)

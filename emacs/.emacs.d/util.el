@@ -29,8 +29,6 @@
 (put 'upcase-region 'disabled nil)
 (put 'downcase-region 'disabled nil)
 
-;(global-set-key (kbd "<M-down>")  'forward-paragraph)
-;(global-set-key (kbd "<M-up>")  'backward-paragraph)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; replace list-buffers with the more advanced ibuffer:
@@ -52,20 +50,6 @@
 (ad-activate 'ibuffer)
 
 
-
-
-
-;; latex macros
-;; type Figure~\ref{f:}
-(fset 'latexeq
-   [?E ?q ?u ?a ?t ?i ?o ?n ?~ ?\\ ?e ?q ?r ?e ?f ?\{ ?e ?: ?\} left])
-;; type Equation~\eqref{f:}
-(fset 'latexfig
-   [?F ?i ?g ?u ?r ?e ?~ ?\\ ?r ?e ?f ?\{ ?f ?: ?\} left])
-
-(global-set-key (kbd "C-c e") 'latexeq)
-(global-set-key (kbd "C-c f") 'latexfig)
-
 ;; macro for latex make
 ;; see
 ;; http://www.gnu.org/software/emacs/manual/html_node/emacs/Save-Keyboard-Macro.html#Save-Keyboard-Macro
@@ -73,6 +57,10 @@
    (lambda (&optional arg) "Keyboard
    macro." (interactive "p") (kmacro-exec-ring-item (quote ([134217761
    109 97 107 101 return 24 49] 0 "%d")) arg)))
+
+;; open science paper manuscript ~/Dropbox/gmc/notes/ms-science-01/ms.tex
+(fset 'mss
+   [?\C-x ?\C-f ?\C-a ?\C-k ?~ ?/ ?D ?r ?o ?p ?b ?o ?x ?/ ?g ?m ?c ?/ ?n ?o ?t ?e ?s ?/ ?m ?s ?- ?s ?c ?i ?e ?n ?c ?e ?- ?0 ?1 ?/ ?m ?s ?. ?t ?e ?x return])
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; custom functions
