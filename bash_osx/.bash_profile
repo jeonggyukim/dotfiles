@@ -83,7 +83,6 @@ export PYTHONPATH=$PYTHONPATH:~/Dropbox/gmc/py/athpy_gmc
 # bookmarks.sh script
 # Note that the use of bookmarks.sh script requires bash4.0+
 source ~/dotfiles/bookmarks/bookmarks.sh
-export PATH="/usr/local/bin:/Users/jgkim/bin:$PATH"
 
 export CSCOPE_EDITOR=`which emacs`
 
@@ -96,3 +95,7 @@ export CSCOPE_EDITOR=`which emacs`
 
 # added by Anaconda2 4.0.0 installer
 export PATH="/Users/jgkim/anaconda/bin:$PATH"
+export MATPLOTLIB="/Users/jgkim/.matplotlib"
+export PATH="/usr/local/bin:/Users/jgkim/bin:~/Dropbox/gmc/py/athpy_gmc/w1:$PATH"
+
+alias mpirun="/usr/local/bin/mpirun"

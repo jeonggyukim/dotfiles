@@ -32,7 +32,7 @@
 (defvar local-packages
   '(auto-complete yasnippet 
     projectile epc jedi ein highlight-indentation python-mode
-    xcscope anzu
+    xcscope anzu smex
     ac-math)
   "A list of packages to ensure installed at launch")
 
@@ -107,6 +107,8 @@
 ;;now let's call this function from c/c++ hooks
 (add-hook 'c++-mode-hook 'my:acc-c-header-init)
 (add-hook 'c-mode-hook 'my:acc-c-header-init)
+(add-hook 'c-mode-hook (lambda () (setq comment-start "//"
+					comment-end   "")))
 
 ;; to deal with complexity between yasnippet and auto-complete
 ;; see http://emacs.stackexchange.com/questions/2767/auto-complete-stops-working-with-c-files
@@ -163,6 +165,10 @@
 (require 'python-mode)
 (setq-default py-shell-name "ipython")
 (setq-default py-which-bufname "IPython")
+;; (setq python-shell-interpreter "ipython"
+;;       python-shell-interpreter-args "--simple-prompt -i")
+
+
 ;;switch to the interpreter after executing code
 ;(setq py-shell-switch-buffers-on-execute-p nil)
 ;(setq py-switch-buffers-on-execute-p nil)
@@ -262,6 +268,17 @@
 ;; set default fonts for macosx
 (if (eq system-type 'darwin)
     (set-default-font "Monaco 18"))
+
+(defun copy-from-osx ()
+  (shell-command-to-string "pbpaste"))
+
+(defun paste-to-osx (text &optional push)
+  (let ((process-connection-type nil))
+    (let ((proc (start-process "pbcopy" "*Messages*" "pbcopy")))
+      (process-send-string proc text)
+      (process-send-eof proc))))
+(setq interprogram-cut-function 'paste-to-osx)
+(setq interprogram-paste-function 'copy-from-osx)
 
 (setq x-alt-keysym 'meta)
 
