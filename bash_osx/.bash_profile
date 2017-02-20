@@ -6,7 +6,7 @@
 # Sample from Advanced Bash-Scripting guide:
 # http://tldp.org/LDP/abs/html/sample-bashrc.html
 ######################################################################
-TERM=xterm
+TERM=xterm-256color
 bind -f ~/.inputrc
 
 # Change default editor

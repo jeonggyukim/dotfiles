@@ -46,7 +46,10 @@ alias ipynb='ipython notebook'
 alias jpynb='jupyter notebook'
 alias jpynbnb='jupyter notebook --no-browser'
 
-alias eem='emacs -nw ~/.emacs'
+alias eem='emacs -nw ~/.emacs.d/init.el'
+alias emem='emacs ~/.emacs.d/init.el'
+alias einit='emacs -nw ~/.emacs.d/myinit.org'
+alias eminit='emacs ~/.emacs.d/myinit.org'
 alias ebash='emacs -nw ~/.bash_profile'
 alias sbash='source ~/.bash_profile'
 alias ealias='emacs -nw ~/.bash_aliases'
@@ -62,6 +65,5 @@ alias animationoff='defaults write com.apple.dock expose-animation-duration -int
 alias dock2d='defaults write com.apple.dock no-glass -boolean NO; killall Dock'
 alias quitfinderon='defaults write com.apple.finder QuitMenuItem -bool YES; killall Finder'
 alias quitfinderoff='defaults write com.apple.finder QuitMenuItem -bool NO; killall Finder'
-
 
 #defaults write org.python.python NSAppSleepDisabled -bool YES

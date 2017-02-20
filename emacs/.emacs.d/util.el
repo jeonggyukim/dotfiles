@@ -68,13 +68,15 @@
 
 ;; eem - Edit the .emacs file
 (defun eem ()
-(interactive)
-(find-file "~/.emacs"))
+  (interactive)
+  (find-file "~/.emacs")
+  )
 
 ;; lem - Load the .emacs file (to apply changes)
 (defun lem ()
-(interactive)
-(load-file "~/.emacs"))
+  (interactive)
+  (load-file "~/.emacs")
+  )
 
 ;; ebash - Edit the .bashrc, .bash_aliases file
 (defun ebash ()
@@ -86,7 +88,6 @@
 (find-file "~/.bash_aliases"))
 
 ;; ===== Function to delete a line =====
-
 ;; First define a variable which will store the previous column position
 (defvar previous-column nil "Save the column position")
 

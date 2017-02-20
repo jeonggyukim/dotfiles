@@ -1,0 +1,581 @@
+* misc interface tweaks
+  #+BEGIN_SRC emacs-lisp
+    (setq user-full-name "Jeong-Gyu Kim")
+    (setq user-mail-address "jgkim@astro.snu.ac.kr")
+
+    ;(setq initial-major-mode 'text-mode)
+    (setq inhibit-startup-message t)
+    (if (not (display-graphic-p))
+        (menu-bar-mode -1)
+      )
+    (tool-bar-mode -1)
+    (global-hl-line-mode t)
+    (which-function-mode 1)
+    (column-number-mode t)
+    (show-paren-mode t)
+    (set-default 'cursor-type 'hollow)
+    (setq vc-follow-symlinks t)
+    (fset 'yes-or-no-p 'y-or-n-p)
+
+    (if (eq system-type 'darwin)
+        (set-default-font "Monaco 18"))
+
+    ;;don’t kill-buffer, kill-this-buffer instead
+    (global-set-key (kbd "C-x k") 'kill-this-buffer)
+
+    ;; change some key bindings
+    ;; 10 Specific Ways to Improve Your Productivity With Emacs
+    ;; https://sites.google.com/site/steveyegge2/effective-emacs
+
+    ;; (global-set-key "\C-w" 'backward-kill-word)
+    ;; (global-set-key "\C-x\C-k" 'kill-region)
+    ;; (global-set-key "\C-c\C-k" 'kill-region)
+
+  					  ;(global-set-key "\C-x\C-m" 'execute-extended-command)
+  					  ;(global-set-key "\C-c\C-m" 'execute-extended-command)
+    (global-set-key "\C-x\C-m" 'counsel-M-x)
+    (global-set-key "\C-c\C-m" 'counsel-M-x)
+
+    (define-key input-decode-map "\e[1;2D" [S-left])
+    (define-key input-decode-map "\e[1;2C" [S-right])
+    (define-key input-decode-map "\e[1;2B" [S-down])
+    (define-key input-decode-map "\e[1;2A" [S-up])
+    (define-key input-decode-map "\e[1;2F" [S-end])
+    (define-key input-decode-map "\e[1;2H" [S-home])
+
+    (define-key input-decode-map "\e[1;9A" [M-up])
+    (define-key input-decode-map "\e[1;9B" [M-down])
+    (define-key input-decode-map "\e[1;9C" [M-right])
+    (define-key input-decode-map "\e[1;9D" [M-left])
+
+    ;; In terminal, some keys (currently: ()\|;'`"#.,) will need
+    ;; escaping in the string, like C-\.
+    ;; this is a really useful tip!
+    ;; How do I bind C-= in emacs?
+    ;; http://stackoverflow.com/questions/10660060/how-do-i-bind-c-in-emacs
+    (defun my/global-map-and-set-key (key command &optional prefix suffix)
+      "`my/map-key' KEY then `global-set-key' KEY with COMMAND.
+    PREFIX or SUFFIX can wrap the key when passing to `global-set-key'."
+      (my/map-key key)
+      (global-set-key (kbd (concat prefix key suffix)) command))
+
+    (defun my/map-key (key)
+      "Map KEY from escape sequence \"\e[emacs-KEY\."
+      (define-key function-key-map (concat "\e[emacs-" key) (kbd key)))
+
+  #+END_SRC
+* misc custom functions,macros
+  - edit and load ~/.emacs, ~/.emacs.d/myinit.org file
+    #+BEGIN_SRC emacs-lisp
+      ;; eem - Edit the .emacs file
+      (defun eem ()
+        (interactive)
+        (find-file "~/.emacs.d/init.el")
+        )
+
+      ;; lem - Load the .emacs file (to apply changes)
+      (defun lem ()
+        (interactive)
+        (load-file "~/.emacs.d/init.el")
+        )
+
+      ;; einit - Edit the .emacs.d/myinit.org file
+      (defun einit ()
+        (interactive)
+        (find-file "~/.emacs.d/myinit.org")
+        )
+
+      (defun ealias ()
+        (interactive)
+        (find-file "~/.bash_aliases")
+        )
+    #+END_SRC
+  - window-split-direction
+    #+BEGIN_SRC emacs-lisp
+      ;; Vertical split shows more of each line, horizontal split shows more
+      ;; lines. This code toggles between them. It only works for frames
+      ;; with exactly two windows. The top window goes to the left or
+      ;; vice-versa. I was motivated by ediff-toggle-split and helped by
+      ;; TransposeWindows. There may well be better ways to write this.
+      ;; source: http://www.emacswiki.org/emacs/ToggleWindowSplit
+
+      (defun window-toggle-split-direction ()
+        "Switch window split from horizontally to vertically, or vice versa.
+      i.e. change right window to bottom, or change bottom window to right."
+        (interactive)
+        (require 'windmove)
+        (let ((done))
+          (dolist (dirs '((right . down) (down . right)))
+    	(unless done
+              (let* ((win (selected-window))
+    		 (nextdir (car dirs))
+    		 (neighbour-dir (cdr dirs))
+    		 (next-win (windmove-find-other-window nextdir win))
+    		 (neighbour1 (windmove-find-other-window neighbour-dir win))
+    		 (neighbour2 (if next-win (with-selected-window next-win
+                                                (windmove-find-other-window neighbour-dir next-win)))))
+                ;;(message "win: %s\nnext-win: %s\nneighbour1: %s\nneighbour2:%s" win next-win neighbour1 neighbour2)
+                (setq done (and (eq neighbour1 neighbour2)
+                                (not (eq (minibuffer-window) next-win))))
+                (if done
+    		(let* ((other-buf (window-buffer next-win)))
+                      (delete-window next-win)
+                      (if (eq nextdir 'right)
+                          (split-window-vertically)
+                        (split-window-horizontally))
+                      (set-window-buffer (windmove-find-other-window neighbour-dir) other-buf))))))))
+
+      (global-set-key (kbd "C-x |") 'window-toggle-split-direction)
+  #+END_SRC
+  - show-paren
+    #+BEGIN_SRC emacs-lisp
+      ;; http://www.emacswiki.org/emacs/ShowParenMode
+      ;; When the matching paren is offscreen, show-paren-mode highlights
+      ;; only the paren at point. It is more useful to show the line of
+      ;; matching paren in the minibuffer. Execute the following to get this
+      ;; behavior:
+      (defadvice show-paren-function
+          (after show-matching-paren-offscreen activate)
+        "If the matching paren is offscreen, show the matching line in the
+          echo area. Has no effect if the character before point is not of
+          the syntax class ')'."
+        (interactive)
+        (let* ((cb (char-before (point)))
+    	   (matching-text (and cb
+    			       (char-equal (char-syntax cb) ?\) )
+    			       (blink-matching-open))))
+          (when matching-text (message matching-text))))
+
+    #+END_SRC
+  - quick copy,cut line
+    #+BEGIN_SRC emacs-lisp
+      (defun quick-copy-line ()
+        "Copy the whole line that point is on and move to the beginning of the next line.
+          Consecutive calls to this command append each line to the
+          kill-ring."
+        (interactive)
+        (let ((beg (line-beginning-position 1))
+          (end (line-beginning-position 2)))
+          (if (eq last-command 'quick-copy-line)
+          (kill-append (buffer-substring beg end) (< end beg))
+        (kill-new (buffer-substring beg end))))
+        (beginning-of-line 2))
+      ;; Now bind the quick copy line function to the C-M-j key
+      (global-set-key (kbd "C-M-j") 'quick-copy-line)
+
+      (defun quick-cut-line ()
+        "Cut the whole line that point is on.  Consecutive calls to this command append each line to the kill-ring."
+        (interactive)
+        (let ((beg (line-beginning-position 1))
+    	  (end (line-beginning-position 2)))
+          (if (eq last-command 'quick-cut-line)
+    	  (kill-append (buffer-substring beg end) (< end beg))
+    	(kill-new (buffer-substring beg end)))
+          (delete-region beg end))
+        (beginning-of-line 1)
+        (setq this-command 'quick-cut-line))
+      (global-set-key (kbd "C-M-k") 'quick-cut-line)
+
+      ;(global-set-key [f6] 'quick-cut-line)
+    #+END_SRC
+  - delete line (unused)
+    #+BEGIN_SRC emacs-lisp
+      ;; ===== Function to delete a line =====
+      ;; First define a variable which will store the previous column position
+      (defvar previous-column nil "Save the column position")
+
+      ;; Define the nuke-line function. The line is killed, then the newline
+      ;; character is deleted. The column which the cursor was positioned at is then
+      ;; restored. Because the kill-line function is used, the contents deleted can
+      ;; be later restored by usibackward-delete-char-untabifyng the yank commands.
+      (defun nuke-line()
+        "Kill an entire line, including the trailing newline character"
+        (interactive)
+
+        ;; Store the current column position, so it can later be restored for a more
+        ;; natural feel to the deletion
+        (setq previous-column (current-column))
+
+        ;; Now move to the end of the current line
+        (end-of-line)
+
+        ;; Test the length of the line. If it is 0, there is no need for a
+        ;; kill-line. All that happens in this case is that the new-line character
+        ;; is deleted.
+        (if (= (current-column) 0)
+          (delete-char 1)
+
+          ;; This is the 'else' clause. The current line being deleted is not zero
+          ;; in length. First remove the line by moving to its start and then
+          ;; killing, followed by deletion of the newline character, and then
+          ;; finally restoration of the column position.
+          (progn
+    	(beginning-of-line)
+    	(kill-line)
+    	(delete-char 1)
+    	(move-to-column previous-column))))
+
+      ;; Now bind the nuke line function to the C-M-k key
+      ;; (global-set-key (kbd "C-M-k") 'nuke-line)
+    #+END_SRC
+* misc packages
+  - hungry delete
+    #+BEGIN_SRC emacs-lisp
+      (use-package hungry-delete
+        :ensure t
+        :config
+        (setq hungry-delete-chars-to-skip " \t\r\f\v")
+        ;; code stolen from
+        ;; https://github.com/kaushalmodi/.emacs.d/blob/master/setup-files/setup-hungry-delete.el
+        ;; Override the default definitions of `hungry-delete-skip-ws-forward' and
+        ;; `hungry-delete-skip-ws-backward'; do not delete back-slashes at EOL.
+        (defun hungry-delete-skip-ws-forward ()
+          "Skip over any whitespace following point.
+      This function skips over horizontal and vertical whitespace."
+          (skip-chars-forward hungry-delete-chars-to-skip)
+          (while (get-text-property (point) 'read-only)
+    	(backward-char)))
+
+        (defun hungry-delete-skip-ws-backward ()
+          "Skip over any whitespace preceding point.
+      This function skips over horizontal and vertical whitespace."
+          (skip-chars-backward hungry-delete-chars-to-skip)
+          (while (get-text-property (point) 'read-only)
+    	(forward-char)))
+
+
+        (defun jgkim/turn-off-hungry-delete-mode ()
+          "Turn off hungry delete mode."
+          (hungry-delete-mode -1)
+          )
+        ;; Enable `hungry-delete-mode' everywhere ..
+        (global-hungry-delete-mode)
+        ;; Except ..
+        ;; `hungry-delete-mode'-loaded backspace does not work in `wdired-mode',
+        ;; i.e. when editing file names in the *Dired* buffer.
+        ;;(add-hook 'wdired-mode-hook #'jgkim/turn-off-hungry-delete-mode)
+        ;; and in minibuffer
+        (add-hook 'minibuffer-setup-hook #'jgkim/turn-off-hungry-delete-mode)
+        ;(provide 'setup-hungry-delete)
+        )
+
+    #+END_SRC
+  - undo-tree
+    #+BEGIN_SRC emacs-lisp
+      (use-package undo-tree
+        :ensure t
+	:config
+        (global-undo-tree-mode 1)
+	(setq undo-tree-visualizer-diff t)
+        )
+    #+END_SRC
+  - drag stuff
+    #+BEGIN_SRC emacs-lisp
+      (use-package drag-stuff
+        :ensure t
+        :config
+        (drag-stuff-global-mode 1)
+	(drag-stuff-define-keys)
+	(add-to-list 'drag-stuff-except-modes 'org-mode)
+	;(add-to-list 'drag-stuff-except-modes 'rebase-mode)
+	;(add-to-list 'drag-stuff-except-modes 'emacs-lisp-mode)
+	;(provide 'init-drag-stuff)
+	)
+    #+END_SRC
+  - beacon mode
+    #+BEGIN_SRC emacs-lisp
+      (use-package beacon
+        :ensure t
+        :config
+        (beacon-mode 1)
+        ; (setq beacon-color "#666600")
+        )
+    #+END_SRC
+  - try
+    #+BEGIN_SRC emacs-lisp
+      (use-package try
+        :ensure t)
+    #+END_SRC
+  - which-key
+    #+BEGIN_SRC emacs-lisp
+      (use-package which-key
+        :ensure t
+        :config 
+        (which-key-mode)
+        (which-key-setup-minibuffer)
+        )
+    #+END_SRC
+* auto-complete
+  #+BEGIN_SRC emacs-lisp
+    (use-package auto-complete-config
+      :after auto-complete)
+
+    (use-package auto-complete
+      :ensure t
+      :config
+      (ac-config-default)
+      (setq ac-delay 0.2)
+      (set-default 'ac-sources
+  		 '(ac-source-words-in-same-mode-buffers))
+      (global-auto-complete-mode t)
+      (bind-keys :map ac-complete-mode-map
+  	       ("C-s" . ac-isearch))
+
+      (setq ac-use-menu-map t)
+      (setq ac-auto-start 4)
+      (ac-set-trigger-key "TAB")
+      )
+
+  #+END_SRC
+
+* ivy,swiper,counsel,smex,avy
+  #+BEGIN_SRC emacs-lisp
+    (use-package smex
+      :ensure t)
+
+    (use-package ivy
+      :ensure t
+      :diminish (ivy-mode)
+      :bind (("C-x b" . ivy-switch-buffer))
+      :config
+      (ivy-mode 1)
+      (setq ivy-use-virtual-buffers t)
+      (setq ivy-count-format "(%d/%d) ")
+      (setq ivy-display-style 'fancy)
+      (setq ivy-height 10)
+      (setq ivy-wrap t)
+      )
+
+    (use-package swiper
+      :ensure counsel
+      :bind (("C-s" . swiper)
+  	 ("C-r" . swiper)
+  	 ("C-c C-r" . ivy-resume)
+  	 ("M-x" . counsel-M-x)
+  	 ("C-x C-f" . counsel-find-file))
+      :config
+      (ivy-mode 1)
+      (global-set-key (kbd "<f1> f") 'counsel-describe-function)
+      (global-set-key (kbd "<f1> v") 'counsel-describe-variable)
+      (global-set-key (kbd "<f1> l") 'counsel-find-library)
+      (global-set-key (kbd "<f2> i") 'counsel-info-lookup-symbol)
+      (global-set-key (kbd "<f2> u") 'counsel-unicode-char)
+      (global-set-key (kbd "<f6>") 'ivy-resume)
+      (define-key read-expression-map (kbd "C-r") 'counsel-expression-history)  
+    ;  (global-set-key (kbd "C-c g") 'counsel-git)
+    ;  (global-set-key (kbd "C-c j") 'counsel-git-grep)
+    ;  (global-set-key (kbd "C-c k") 'counsel-ag)
+    ;  (global-set-key (kbd "C-x l") 'counsel-locate)
+    ;  (global-set-key (kbd "C-S-o") 'counsel-rhythmbox)
+      )
+
+    (use-package avy
+      :ensure t
+      :bind (
+  	 ("M-s" . avy-goto-char-2)
+  	 ("M-g g" . avy-goto-line)
+  	 ("M-g M-g" . avy-goto-line))
+      :config
+      ;; Makes it easier to see the candidates
+      (when (display-graphic-p)
+        (setq avy-background t))
+      )
+  #+END_SRC
+
+* color-theme,ace-window
+  #+BEGIN_SRC emacs-lisp
+    (use-package color-theme
+      :ensure t)
+    (use-package zenburn-theme
+      :ensure t
+        )
+    (use-package leuven-theme
+      :ensure t
+      )
+    (use-package monokai-theme
+      :ensure t
+      )
+    ;(load-theme 'zenburn t)
+    ;(load-theme 'leuven t)
+    (load-theme 'leuven-dark t)
+    ;(load-theme 'monokai t)
+    
+    ;; (if (not (display-graphic-p))
+    ;;     (set-face-background hl-line-face "gray13")
+    ;;   )
+
+    (use-package ace-window
+      :ensure t
+      :init
+      (global-set-key (kbd "M-p") 'ace-window)
+      (when (display-graphic-p)
+        (custom-set-faces
+         '(aw-leading-char-face
+         ((t (:inherit ace-jump-face-foreground :height 3.0))))))
+      )
+
+  #+END_SRC
+
+* org bullets
+  #+BEGIN_SRC emacs-lisp
+    (use-package org-bullets
+      :ensure t
+      :config
+      (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1)))
+      )
+#+END_SRC
+* reveal.js
+  [[https://github.com/yjwen/org-reveal]]
+  #+BEGIN_SRC emacs-lisp
+    (use-package ox-reveal
+      :ensure ox-reveal)
+    (setq org-reveal-root "http://cdn.jsdelivr.net/reveal.js/3.0.0/")
+    (setq org-reveal-mathjax t)
+    (use-package htmlize
+      :ensure t)
+  #+END_SRC
+
+* flycheck
+  #+BEGIN_SRC emacs-lisp
+    (use-package flycheck
+      :ensure t
+      :init
+      ;(global-flycheck-mode t)
+      (setq-default flycheck-disabled-checkers '(emacs-lisp-checkdoc))
+      )
+    (use-package flycheck-pyflakes
+      :ensure t
+      :init
+      )
+  #+END_SRC
+* agressive indent
+  #+BEGIN_SRC emacs-lisp
+    (use-package aggressive-indent
+      :ensure t
+      :config
+      (add-hook 'emacs-lisp-mode-hook #'aggressive-indent-mode)
+      (add-hook 'css-mode-hook #'aggressive-indent-mode)
+      (add-to-list
+       'aggressive-indent-dont-indent-if
+       '(and (derived-mode-p 'c++-mode)
+  	   (null (string-match "\\([;{}]\\|\\b\\(if\\|for\\|while\\)\\b\\)"
+  			       (thing-at-point 'line)))))
+  
+      (setq aggressive-indent-excluded-modes
+  	  (remove 'python-mode aggressive-indent-excluded-modes))
+      )
+
+  #+END_SRC
+* expand region
+  #+BEGIN_SRC emacs-lisp
+    (use-package expand-region
+      :ensure t
+      :config      
+      ;(global-set-key (kbd "C-=") 'er/expand-region)
+      (my/global-map-and-set-key "C-=" 'er/expand-region)
+      )
+
+  #+END_SRC
+* python
+  - jedi: pip install jedi epc ; M-x jedi:install-server
+  #+BEGIN_SRC emacs-lisp
+    ;; Emacs built-in `python' mode
+    (use-package python
+      ;:disabled
+      :mode (("\\.py\\'" . python-mode))
+      :interpreter (("ipython" . python-mode))
+      )
+
+    ;; https://github.com/emacsmirror/python-mode
+    (use-package python-mode
+      ;:disabled
+      :config
+      ;; Use IPython
+      (setq-default py-shell-name "ipython")
+      (setq-default py-which-bufname "IPython")
+  
+      ;; Switch to the interpreter after executing code
+      (setq py-shell-switch-buffers-on-execute-p t)
+      ;; Don't switch the code buffer to python shell
+      (setq py-switch-buffers-on-execute-p nil)
+      ;; switch to the interpreter after executing code
+      (setq py-split-windows-on-execute-p t)
+      ;; Try to automagically figure out indentation
+      (setq py-smart-indentation t)
+      (provide 'setup-python)
+      )
+
+    (use-package jedi
+      :ensure t
+      :config
+      (add-hook 'python-mode-hook 'jedi:setup)
+      (setq jedi:complete-on-dot t) ; automatically start completion after inserting a dot
+      )
+
+    (add-hook 'python-mode-hook
+      	  '(lambda ()
+      	     (setq python-indent 4)))
+
+  #+END_SRC
+
+python-environment-directory
+
+* latex
+  #+BEGIN_SRC emacs-lisp
+    ;; reference
+    ;; http://www.stefanom.org/setting-up-a-nice-auctex-environment-on-mac-os-x/
+    (add-hook 'LaTeX-mode-hook 'turn-on-reftex)
+    (setq reftex-plug-into-auctex t)
+
+    (use-package LaTeX-mode
+      :ensure auctex
+      :config
+      (setq TeX-auto-save t)
+      (setq TeX-parse-self t)
+      (setq-default TeX-master nil)
+
+      (add-hook 'LaTeX-mode-hook 'visual-line-mode)
+      (add-hook 'LaTeX-mode-hook 'flyspell-mode)
+      (add-hook 'LaTeX-mode-hook 'LaTeX-math-mode)
+      (setq TeX-PDF-mode t)
+
+      (defun ac-LaTeX-mode-setup () ; add ac-sources to default ac-sources
+        (setq ac-sources
+  	    (append '(ac-source-math-unicode
+  		      ac-source-math-latex
+  		      ac-source-latex-commands)
+  		    ac-sources))
+        )
+      (add-hook 'LaTeX-mode-hook 'ac-LaTeX-mode-setup)
+      (setq ac-math-unicode-in-math-p t)
+
+      (add-hook 'LaTeX-mode-hook
+        (lambda () (local-set-key (kbd "<S-s-mouse-1>") #'TeX-view))
+        )
+
+      ;; Emacs + Synctex + Skim: How to correctly set up syncronization?
+      ;; http://stackoverflow.com/questions/7899845/emacs-synctex-skim-how-to-correctly-set-up-syncronization-none-of-the-exi
+      ;; Use Skim as viewer, enable source <-> PDF sync
+      ;; make latexmk available via C-c C-c
+      ;; Note: SyncTeX is setup via ~/.latexmkrc (see below)
+      (add-hook 'LaTeX-mode-hook (lambda ()
+  				 (push
+  				  '("latexmk" "latexmk -pdf %s" TeX-run-TeX nil t
+  				    :help "Run latexmk on file")
+  				  TeX-command-list)))
+      (add-hook 'TeX-mode-hook '(lambda () (setq TeX-command-default "latexmk")))
+
+      ;; use Skim as default pdf viewer
+      ;; Skim's displayline is used for forward search (from .tex to .pdf)
+      ;; option -b highlights the current line; option -g opens Skim in the background
+      (setq TeX-view-program-selection '((output-pdf "PDF Viewer")))
+      (setq TeX-view-program-list
+  	  '(("PDF Viewer" "/Applications/Skim.app/Contents/SharedSupport/displayline -b -g %n %o %b")))
+
+      ;;; in ~/.latexmkrc
+      ; $pdflatex = 'pdflatex -interaction=nonstopmode -synctex=1 %O %S';
+      ; $pdf_previewer = 'open -a skim';
+      ; $clean_ext = 'bbl rel %R-blx.bib %R.synctex.gz';
+
+      )
+  #+END_SRC
