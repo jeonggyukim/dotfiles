@@ -1,16 +1,39 @@
+#+STARTUP: overview
+
 * misc interface tweaks
   #+BEGIN_SRC emacs-lisp
-    (setq user-full-name "Jeong-Gyu Kim")
-    (setq user-mail-address "jgkim@astro.snu.ac.kr")
+    (setq user-full-name "Jeong-Gyu Kim"
+          user-mail-address "jgkim@astro.snu.ac.kr")
 
     ;(setq initial-major-mode 'text-mode)
     (setq inhibit-startup-message t)
+
     (if (not (display-graphic-p))
         (menu-bar-mode -1)
       )
+
+    ;; backups
+    (setq backup-directory-alist '(("." . "~/.emacs.d/backups")))
+    (setq delete-old-versions -1)
+    (setq version-control t)
+    (setq vc-make-backup-files t)
+    (setq auto-save-file-name-transforms '((".*" "~/.emacs.d/auto-save-list/" t)))
+
+    ;Handy way of getting back to previous places.
+    (bind-key "C-x p" 'pop-to-mark-command)
+    (setq set-mark-command-repeat-pop t)
+
+    ;; linum
+    (add-hook 'prog-mode-hook 'linum-mode)
+    (setq linum-format "%4d \u2502")
+
+    (setq sentence-end-double-space nil)
+    (setq shell-command-switch "-ic")
+    (setq-default fill-column 80)
     (tool-bar-mode -1)
+    (setq shift-select-mode t)
     (global-hl-line-mode t)
-    (which-function-mode 1)
+    (which-function-mode t)
     (column-number-mode t)
     (show-paren-mode t)
     (set-default 'cursor-type 'hollow)
@@ -31,10 +54,8 @@
     ;; (global-set-key "\C-x\C-k" 'kill-region)
     ;; (global-set-key "\C-c\C-k" 'kill-region)
 
-  					  ;(global-set-key "\C-x\C-m" 'execute-extended-command)
-  					  ;(global-set-key "\C-c\C-m" 'execute-extended-command)
-    (global-set-key "\C-x\C-m" 'counsel-M-x)
-    (global-set-key "\C-c\C-m" 'counsel-M-x)
+              			      ;(global-set-key "\C-x\C-m" 'execute-extended-command)
+              			      ;(global-set-key "\C-c\C-m" 'execute-extended-command)
 
     (define-key input-decode-map "\e[1;2D" [S-left])
     (define-key input-decode-map "\e[1;2C" [S-right])
@@ -178,6 +199,35 @@
 
       ;(global-set-key [f6] 'quick-cut-line)
     #+END_SRC
+  - move to beginning of line
+    #+BEGIN_SRC emacs-lisp
+      (defun my/smarter-move-beginning-of-line (arg)
+          "Move point back to indentation of beginning of line.
+
+      Move point to the first non-whitespace character on this line.
+      If point is already there, move to the beginning of the line.
+      Effectively toggle between the first non-whitespace character and
+      the beginning of the line.
+
+      If ARG is not nil or 1, move forward ARG - 1 lines first.  If
+      point reaches the beginning or end of the buffer, stop there."
+          (interactive "^p")
+          (setq arg (or arg 1))
+
+          ;; Move lines first
+          (when (/= arg 1)
+    	(let ((line-move-visual nil))
+    	  (forward-line (1- arg))))
+
+          (let ((orig-point (point)))
+    	(back-to-indentation)
+    	(when (= orig-point (point))
+    	  (move-beginning-of-line 1))))
+
+      ;; remap C-a to `smarter-move-beginning-of-line'
+      (global-set-key [remap move-beginning-of-line]
+    		  'my/smarter-move-beginning-of-line)
+    #+END_SRC
   - delete line (unused)
     #+BEGIN_SRC emacs-lisp
       ;; ===== Function to delete a line =====
@@ -219,10 +269,35 @@
       ;; (global-set-key (kbd "C-M-k") 'nuke-line)
     #+END_SRC
 * misc packages
+  - smart mode line
+    #+BEGIN_SRC emacs-lisp
+      (use-package smart-mode-line
+        :ensure t
+        :config
+	(setq sml/no-confirm-load-theme t)
+        (setq sml/theme 'dark)
+        (sml/setup)
+        )
+    #+END_SRC
+  - fci
+    #+BEGIN_SRC emacs-lisp
+      (use-package fill-column-indicator
+        :ensure t
+        :config
+        (setq fci-rule-color "darkblue")
+        (setq fci-rule-width 1)
+        (add-hook 'c-mode-hook 'turn-on-fci-mode)
+        (add-hook 'emacs-lisp-mode-hook 'turn-on-fci-mode)
+        (add-hook 'LaTex-mode-hook 'turn-on-fci-mode)
+        )
+
+    #+END_SRC
+	
   - hungry delete
     #+BEGIN_SRC emacs-lisp
       (use-package hungry-delete
-        :ensure t
+        :defer 1
+        :diminish (hungry-delete-mode)
         :config
         (setq hungry-delete-chars-to-skip " \t\r\f\v")
         ;; code stolen from
@@ -238,11 +313,10 @@
 
         (defun hungry-delete-skip-ws-backward ()
           "Skip over any whitespace preceding point.
-      This function skips over horizontal and vertical whitespace."
+          This function skips over horizontal and vertical whitespace."
           (skip-chars-backward hungry-delete-chars-to-skip)
           (while (get-text-property (point) 'read-only)
     	(forward-char)))
-
 
         (defun jgkim/turn-off-hungry-delete-mode ()
           "Turn off hungry delete mode."
@@ -256,23 +330,25 @@
         ;;(add-hook 'wdired-mode-hook #'jgkim/turn-off-hungry-delete-mode)
         ;; and in minibuffer
         (add-hook 'minibuffer-setup-hook #'jgkim/turn-off-hungry-delete-mode)
-        ;(provide 'setup-hungry-delete)
+    					  ;(provide 'setup-hungry-delete)
         )
 
     #+END_SRC
   - undo-tree
     #+BEGIN_SRC emacs-lisp
       (use-package undo-tree
-        :ensure t
+        :defer 2
+	:diminish (undo-tree-mode)
 	:config
-        (global-undo-tree-mode 1)
+	(global-undo-tree-mode 1)
 	(setq undo-tree-visualizer-diff t)
         )
     #+END_SRC
   - drag stuff
     #+BEGIN_SRC emacs-lisp
       (use-package drag-stuff
-        :ensure t
+        :defer 2
+	:diminish (drag-stuff-mode)
         :config
         (drag-stuff-global-mode 1)
 	(drag-stuff-define-keys)
@@ -307,9 +383,6 @@
     #+END_SRC
 * auto-complete
   #+BEGIN_SRC emacs-lisp
-    (use-package auto-complete-config
-      :after auto-complete)
-
     (use-package auto-complete
       :ensure t
       :config
@@ -333,6 +406,9 @@
     (use-package smex
       :ensure t)
 
+    (use-package counsel
+      :ensure t)
+
     (use-package ivy
       :ensure t
       :diminish (ivy-mode)
@@ -348,33 +424,54 @@
 
     (use-package swiper
       :ensure counsel
-      :bind (("C-s" . swiper)
-  	 ("C-r" . swiper)
-  	 ("C-c C-r" . ivy-resume)
-  	 ("M-x" . counsel-M-x)
-  	 ("C-x C-f" . counsel-find-file))
+      :bind
+      (("C-s" . swiper)
+       ("C-r" . swiper)
+       ("C-c C-r" . ivy-resume)
+       ("M-x" . counsel-M-x)
+       ("C-x C-f" . counsel-find-file))
       :config
-      (ivy-mode 1)
-      (global-set-key (kbd "<f1> f") 'counsel-describe-function)
-      (global-set-key (kbd "<f1> v") 'counsel-describe-variable)
-      (global-set-key (kbd "<f1> l") 'counsel-find-library)
-      (global-set-key (kbd "<f2> i") 'counsel-info-lookup-symbol)
-      (global-set-key (kbd "<f2> u") 'counsel-unicode-char)
-      (global-set-key (kbd "<f6>") 'ivy-resume)
-      (define-key read-expression-map (kbd "C-r") 'counsel-expression-history)  
+      (progn
+        (ivy-mode 1)
+        (ivy-set-actions
+         'counsel-find-file
+         '(("d" (lambda (x) (delete-file (expand-file-name x)))
+  	  "delete"
+  	  )))
+        (ivy-set-actions
+         'ivy-switch-buffer
+         '(("k" (lambda (x)
+  		(kill-buffer x)
+  		(ivy--reset-state ivy-last))
+  	  "kill")
+  	 ("j"
+  	  ivy--switch-buffer-other-window-action
+  	  "other window")
+  	 ))
+    
+        (global-set-key "\C-x\C-m" 'counsel-M-x)
+        (global-set-key "\C-c\C-m" 'counsel-M-x)
+        (global-set-key (kbd "<f1> f") 'counsel-describe-function)
+        (global-set-key (kbd "<f1> v") 'counsel-describe-variable)
+        (global-set-key (kbd "<f1> l") 'counsel-find-library)
+        (global-set-key (kbd "<f2> i") 'counsel-info-lookup-symbol)
+        (global-set-key (kbd "<f2> u") 'counsel-unicode-char)
+        (global-set-key (kbd "<f6>") 'ivy-resume)
+        (define-key read-expression-map (kbd "C-r") 'counsel-expression-history)  
     ;  (global-set-key (kbd "C-c g") 'counsel-git)
     ;  (global-set-key (kbd "C-c j") 'counsel-git-grep)
     ;  (global-set-key (kbd "C-c k") 'counsel-ag)
     ;  (global-set-key (kbd "C-x l") 'counsel-locate)
     ;  (global-set-key (kbd "C-S-o") 'counsel-rhythmbox)
+        )
       )
 
     (use-package avy
       :ensure t
       :bind (
-  	 ("M-s" . avy-goto-char-2)
-  	 ("M-g g" . avy-goto-line)
-  	 ("M-g M-g" . avy-goto-line))
+         ("M-s" . avy-goto-char-2)
+         ("M-g g" . avy-goto-line)
+         ("M-g M-g" . avy-goto-line))
       :config
       ;; Makes it easier to see the candidates
       (when (display-graphic-p)
@@ -382,7 +479,7 @@
       )
   #+END_SRC
 
-* color-theme,ace-window
+* color-theme,winner-mode,ace-window
   #+BEGIN_SRC emacs-lisp
     (use-package color-theme
       :ensure t)
@@ -399,7 +496,7 @@
     ;(load-theme 'leuven t)
     (load-theme 'leuven-dark t)
     ;(load-theme 'monokai t)
-    
+
     ;; (if (not (display-graphic-p))
     ;;     (set-face-background hl-line-face "gray13")
     ;;   )
@@ -412,6 +509,11 @@
         (custom-set-faces
          '(aw-leading-char-face
          ((t (:inherit ace-jump-face-foreground :height 3.0))))))
+      )
+    (use-package winner
+      :defer 3
+      :config 
+      (winner-mode)
       )
 
   #+END_SRC
@@ -453,7 +555,7 @@
     (use-package aggressive-indent
       :ensure t
       :config
-      (add-hook 'emacs-lisp-mode-hook #'aggressive-indent-mode)
+      ;(add-hook 'emacs-lisp-mode-hook #'aggressive-indent-mode)
       (add-hook 'css-mode-hook #'aggressive-indent-mode)
       (add-to-list
        'aggressive-indent-dont-indent-if
@@ -488,12 +590,13 @@
 
     ;; https://github.com/emacsmirror/python-mode
     (use-package python-mode
+      :ensure t
       ;:disabled
       :config
       ;; Use IPython
       (setq-default py-shell-name "ipython")
       (setq-default py-which-bufname "IPython")
-  
+
       ;; Switch to the interpreter after executing code
       (setq py-shell-switch-buffers-on-execute-p t)
       ;; Don't switch the code buffer to python shell
@@ -513,8 +616,8 @@
       )
 
     (add-hook 'python-mode-hook
-      	  '(lambda ()
-      	     (setq python-indent 4)))
+  	'(lambda ()
+        	   (setq python-indent 4)))
 
   #+END_SRC
 
@@ -524,58 +627,65 @@ python-environment-directory
   #+BEGIN_SRC emacs-lisp
     ;; reference
     ;; http://www.stefanom.org/setting-up-a-nice-auctex-environment-on-mac-os-x/
+
+    (require 'latex)
     (add-hook 'LaTeX-mode-hook 'turn-on-reftex)
     (setq reftex-plug-into-auctex t)
 
-    (use-package LaTeX-mode
-      :ensure auctex
-      :config
-      (setq TeX-auto-save t)
-      (setq TeX-parse-self t)
-      (setq-default TeX-master nil)
-
-      (add-hook 'LaTeX-mode-hook 'visual-line-mode)
-      (add-hook 'LaTeX-mode-hook 'flyspell-mode)
-      (add-hook 'LaTeX-mode-hook 'LaTeX-math-mode)
-      (setq TeX-PDF-mode t)
-
-      (defun ac-LaTeX-mode-setup () ; add ac-sources to default ac-sources
-        (setq ac-sources
-  	    (append '(ac-source-math-unicode
-  		      ac-source-math-latex
-  		      ac-source-latex-commands)
-  		    ac-sources))
+    (setq tex-mode-hook 
+        '(lambda nil 
+             (setq fill-column 70)
+             (auto-fill-mode 1))
         )
-      (add-hook 'LaTeX-mode-hook 'ac-LaTeX-mode-setup)
-      (setq ac-math-unicode-in-math-p t)
 
-      (add-hook 'LaTeX-mode-hook
+    (setq TeX-auto-save t)
+    (setq TeX-parse-self t)
+    (setq TeX-PDF-mode t)
+    (setq-default TeX-master nil)
+
+    (add-hook 'LaTeX-mode-hook 'visual-line-mode)
+    (add-hook 'LaTeX-mode-hook 'flyspell-mode)
+    (add-hook 'LaTeX-mode-hook 'LaTeX-math-mode)
+
+
+    (defun ac-LaTeX-mode-setup () ; add ac-sources to default ac-sources
+      (setq ac-sources
+        (append '(ac-source-math-unicode
+          	    ac-source-math-latex
+          	    ac-source-latex-commands)
+          	  ac-sources))
+      )
+    (add-hook 'LaTeX-mode-hook 'ac-LaTeX-mode-setup)
+    (setq ac-math-unicode-in-math-p t)
+
+    (add-hook 'LaTeX-mode-hook
         (lambda () (local-set-key (kbd "<S-s-mouse-1>") #'TeX-view))
         )
 
-      ;; Emacs + Synctex + Skim: How to correctly set up syncronization?
-      ;; http://stackoverflow.com/questions/7899845/emacs-synctex-skim-how-to-correctly-set-up-syncronization-none-of-the-exi
-      ;; Use Skim as viewer, enable source <-> PDF sync
-      ;; make latexmk available via C-c C-c
-      ;; Note: SyncTeX is setup via ~/.latexmkrc (see below)
-      (add-hook 'LaTeX-mode-hook (lambda ()
-  				 (push
-  				  '("latexmk" "latexmk -pdf %s" TeX-run-TeX nil t
-  				    :help "Run latexmk on file")
-  				  TeX-command-list)))
-      (add-hook 'TeX-mode-hook '(lambda () (setq TeX-command-default "latexmk")))
+    ;; Emacs + Synctex + Skim: How to correctly set up syncronization?
+    ;; http://stackoverflow.com/questions/7899845/emacs-synctex-skim-how-to-correctly-set-up-syncronization-none-of-the-exi
+    ;; Use Skim as viewer, enable source <-> PDF sync
+    ;; make latexmk available via C-c C-c
+    ;; Note: SyncTeX is setup via ~/.latexmkrc (see below)
+    (add-hook 'LaTeX-mode-hook (lambda ()
+          		       (push
+          			'("latexmk" "latexmk -pdf %s" TeX-run-TeX nil t
+          			  :help "Run latexmk on file")
+          			TeX-command-list)))
+    (add-hook 'TeX-mode-hook '(lambda () (setq TeX-command-default "latexmk")))
 
-      ;; use Skim as default pdf viewer
-      ;; Skim's displayline is used for forward search (from .tex to .pdf)
-      ;; option -b highlights the current line; option -g opens Skim in the background
-      (setq TeX-view-program-selection '((output-pdf "PDF Viewer")))
-      (setq TeX-view-program-list
-  	  '(("PDF Viewer" "/Applications/Skim.app/Contents/SharedSupport/displayline -b -g %n %o %b")))
+    ;; use Skim as default pdf viewer
+    ;; Skim's displayline is used for forward search (from .tex to .pdf)
+    ;; option -b highlights the current line; option -g opens Skim in the background
+    (setq TeX-view-program-selection '((output-pdf "PDF Viewer")))
+    (setq TeX-view-program-list
+        '(("PDF Viewer"
+	"/Applications/Skim.app/Contents/SharedSupport/displayline -b -g %n %o %b")))
 
-      ;;; in ~/.latexmkrc
-      ; $pdflatex = 'pdflatex -interaction=nonstopmode -synctex=1 %O %S';
-      ; $pdf_previewer = 'open -a skim';
-      ; $clean_ext = 'bbl rel %R-blx.bib %R.synctex.gz';
+    ;;; in ~/.latexmkrc
+    ; $pdflatex = 'pdflatex -interaction=nonstopmode -synctex=1 %O %S';
+    ; $pdf_previewer = 'open -a skim';
+    ; $clean_ext = 'bbl rel %R-blx.bib %R.synctex.gz';
 
-      )
   #+END_SRC
+
