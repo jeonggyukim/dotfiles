@@ -12,32 +12,60 @@ alias la='ll -Aa'           #  Show hidden files.
 alias ld='ls -ld */'
 alias l='ls -CF'
 
+alias grep='grep --color=always'
+alias fgrep='fgrep --color=auto'
+alias egrep='egrep --color=auto'
+
+
 alias e='emacs -nw'
 alias em='emacs'
-alias eem='e ~/.emacs'
-alias ems='emacs -nw ms.tex'
-alias emms='emacs ms.tex&'
+alias eem='emacs -nw ~/.emacs.d/init.el'
+alias emem='emacs ~/.emacs.d/init.el &'
+alias einit='emacs -nw ~/.emacs.d/myinit.org'
+alias eminit='emacs ~/.emacs.d/myinit.org &'
 
-alias ealias='e ~/.bash_aliases'
-alias ebash='e ~/.bashrc'
-alias sbash='source ~/.bashrc'
+if [[ $(uname -s) == "Linux" ]]; then
+    alias ebash='emacs -nw ~/.bashrc'
+    alias sbash='source ~/.bashrc'
+elif [[ $(uname -s) == "Darwin" ]]; then
+    alias ebash='emacs -nw ~/.bash_profile'
+    alias sbash='source ~/.bash_profile'
+fi
+alias ealias='emacs -nw ~/.bash_aliases'
+
+alias ems='emacs -nw ms.tex'
+alias emms='emacs ms.tex &'
 
 alias ipy='ipython'
 alias jpynb='jupyter notebook'
 alias jpynbnb='jupyter notebook --no-browser'
 
+if [[ $(uname -s) == "Darwin" ]]; then
+    alias evince='skim'
+fi
 alias mk='make'
 alias ev='evince'
 alias s='ssh'
 
 alias eidl='e ~/.idlstartup.pro'
 
-alias docs='cd ~/docs'
+# How to use Terminal to speed up OS X
+# Reference:
+# http://www.macworld.com.au/help/how-to-use-terminal-to-speed-up-mountain-lion-70147/
+if [[ $(uname -s) == "Darwin" ]]; then
+    alias dashon='defaults write com.apple.dashboard mcx-disabled -boolean NO; killall Dock'
+    alias dashoff='defaults write com.apple.dashboard mcx-disabled -boolean YES; killall Dock'
+    alias animationon='defaults delete com.apple.dock expose-animation-duration; killall Dock'
+    alias animationoff='defaults write com.apple.dock expose-animation-duration -int 0; killall Dock'
+    alias dock2d='defaults write com.apple.dock no-glass -boolean NO; killall Dock'
+    alias quitfinderon='defaults write com.apple.finder QuitMenuItem -bool YES; killall Finder'
+    alias quitfinderoff='defaults write com.apple.finder QuitMenuItem -bool NO; killall Finder'
+fi
+
 
 alias libpath='echo -e ${LD_LIBRARY_PATH//:/\\n}'
-
-
-
+alias path='echo -e ${PATH//:/\\n}'
+alias libpath='echo -e ${LD_LIBRARY_PATH//:/\\n}'
 
 #-------------------------------------------------------------
 # Process/system related functions:
@@ -46,7 +74,6 @@ alias libpath='echo -e ${LD_LIBRARY_PATH//:/\\n}'
 
 function my_ps() { ps $@ -u $USER -o pid,%cpu,%mem,bsdtime,command ; }
 function pp() { my_ps f | awk '!/awk/ && $0~var' var=${1:-".*"} ; }
-
 
 function killps()   # kill by process name
 {

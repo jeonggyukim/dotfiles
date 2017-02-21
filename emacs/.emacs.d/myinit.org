@@ -358,19 +358,15 @@
 	;(provide 'init-drag-stuff)
 	)
     #+END_SRC
-  - beacon mode
+  - beacon mode, try
     #+BEGIN_SRC emacs-lisp
       (use-package beacon
-        :ensure t
         :config
         (beacon-mode 1)
         ; (setq beacon-color "#666600")
         )
-    #+END_SRC
-  - try
-    #+BEGIN_SRC emacs-lisp
-      (use-package try
-        :ensure t)
+
+      (use-package try)
     #+END_SRC
   - which-key
     #+BEGIN_SRC emacs-lisp
@@ -493,8 +489,8 @@
       :ensure t
       )
     ;(load-theme 'zenburn t)
-    ;(load-theme 'leuven t)
-    (load-theme 'leuven-dark t)
+    (load-theme 'leuven t)
+    ;(load-theme 'leuven-dark t)
     ;(load-theme 'monokai t)
 
     ;; (if (not (display-graphic-p))
@@ -511,8 +507,7 @@
          ((t (:inherit ace-jump-face-foreground :height 3.0))))))
       )
     (use-package winner
-      :defer 3
-      :config 
+      :config
       (winner-mode)
       )
 
@@ -628,64 +623,71 @@ python-environment-directory
     ;; reference
     ;; http://www.stefanom.org/setting-up-a-nice-auctex-environment-on-mac-os-x/
 
-    (require 'latex)
-    (add-hook 'LaTeX-mode-hook 'turn-on-reftex)
-    (setq reftex-plug-into-auctex t)
+    ;; (unless (package-installed-p 'auctex)
+    ;;   (package-install 'auctex))
 
-    (setq tex-mode-hook 
-        '(lambda nil 
-             (setq fill-column 70)
-             (auto-fill-mode 1))
-        )
+    (use-package latex
+      :ensure auctex
+      :config
+      (progn
+        (add-hook 'LaTeX-mode-hook 'turn-on-reftex)
+        (setq reftex-plug-into-auctex t)
+        (setq tex-mode-hook 
+  	    '(lambda nil (setq fill-column 70)
+  	       (auto-fill-mode 1))
+  	    )
 
-    (setq TeX-auto-save t)
-    (setq TeX-parse-self t)
-    (setq TeX-PDF-mode t)
-    (setq-default TeX-master nil)
+        (setq TeX-auto-save t)
+        (setq TeX-parse-self t)
+        (setq TeX-PDF-mode t)
+        (setq-default TeX-master nil)
 
-    (add-hook 'LaTeX-mode-hook 'visual-line-mode)
-    (add-hook 'LaTeX-mode-hook 'flyspell-mode)
-    (add-hook 'LaTeX-mode-hook 'LaTeX-math-mode)
-
-
-    (defun ac-LaTeX-mode-setup () ; add ac-sources to default ac-sources
-      (setq ac-sources
-        (append '(ac-source-math-unicode
-          	    ac-source-math-latex
-          	    ac-source-latex-commands)
-          	  ac-sources))
-      )
-    (add-hook 'LaTeX-mode-hook 'ac-LaTeX-mode-setup)
-    (setq ac-math-unicode-in-math-p t)
-
-    (add-hook 'LaTeX-mode-hook
-        (lambda () (local-set-key (kbd "<S-s-mouse-1>") #'TeX-view))
-        )
-
-    ;; Emacs + Synctex + Skim: How to correctly set up syncronization?
-    ;; http://stackoverflow.com/questions/7899845/emacs-synctex-skim-how-to-correctly-set-up-syncronization-none-of-the-exi
-    ;; Use Skim as viewer, enable source <-> PDF sync
-    ;; make latexmk available via C-c C-c
-    ;; Note: SyncTeX is setup via ~/.latexmkrc (see below)
-    (add-hook 'LaTeX-mode-hook (lambda ()
-          		       (push
-          			'("latexmk" "latexmk -pdf %s" TeX-run-TeX nil t
-          			  :help "Run latexmk on file")
-          			TeX-command-list)))
-    (add-hook 'TeX-mode-hook '(lambda () (setq TeX-command-default "latexmk")))
-
-    ;; use Skim as default pdf viewer
-    ;; Skim's displayline is used for forward search (from .tex to .pdf)
-    ;; option -b highlights the current line; option -g opens Skim in the background
-    (setq TeX-view-program-selection '((output-pdf "PDF Viewer")))
-    (setq TeX-view-program-list
-        '(("PDF Viewer"
-	"/Applications/Skim.app/Contents/SharedSupport/displayline -b -g %n %o %b")))
-
+        (add-hook 'LaTeX-mode-hook 'visual-line-mode)
+        (add-hook 'LaTeX-mode-hook 'flyspell-mode)
+        (add-hook 'LaTeX-mode-hook 'LaTeX-math-mode)
+        (defun ac-LaTeX-mode-setup () ; add ac-sources to default ac-sources
+  	(setq ac-sources
+  	      (append '(ac-source-math-unicode
+  			ac-source-math-latex
+  			ac-source-latex-commands)
+  		      ac-sources))
+  	)
+        (add-hook 'LaTeX-mode-hook 'ac-LaTeX-mode-setup)
+        (setq ac-math-unicode-in-math-p t)
+    
+        (add-hook 'LaTeX-mode-hook
+  		(lambda () (local-set-key (kbd "<S-s-mouse-1>") #'TeX-view))
+  		)
+    
+        ;; Emacs + Synctex + Skim: How to correctly set up syncronization?
+        ;; http://stackoverflow.com/questions/7899845/emacs-synctex-skim-how-to-correctly-set-up-syncronization-none-of-the-exi
+        ;; Use Skim as viewer, enable source <-> PDF sync
+        ;; make latexmk available via C-c C-c
+        ;; Note: SyncTeX is setup via ~/.latexmkrc (see below)
+        (add-hook 'LaTeX-mode-hook (lambda ()
+  				   (push
+  				    '("latexmk" "latexmk -pdf %s" TeX-run-TeX nil t
+  				      :help "Run latexmk on file")
+  				    TeX-command-list)))
+        (add-hook 'TeX-mode-hook '(lambda () (setq TeX-command-default "latexmk")))
+    
+        ;; use Skim as default pdf viewer
+        ;; Skim's displayline is used for forward search (from .tex to .pdf)
+        ;; option -b highlights the current line; option -g opens Skim in the background
+        (setq TeX-view-program-selection '((output-pdf "PDF Viewer")))
+        (setq TeX-view-program-list
+  	    '(("PDF Viewer"
+  	       "/Applications/Skim.app/Contents/SharedSupport/displayline -b -g %n %o %b")))
+    
     ;;; in ~/.latexmkrc
-    ; $pdflatex = 'pdflatex -interaction=nonstopmode -synctex=1 %O %S';
-    ; $pdf_previewer = 'open -a skim';
-    ; $clean_ext = 'bbl rel %R-blx.bib %R.synctex.gz';
+  					  ; $pdflatex = 'pdflatex -interaction=nonstopmode -synctex=1 %O %S';
+  					  ; $pdf_previewer = 'open -a skim';
+  					  ; $clean_ext = 'bbl rel %R-blx.bib %R.synctex.gz';
+    
+        )
+      )
+
+
 
   #+END_SRC
 
