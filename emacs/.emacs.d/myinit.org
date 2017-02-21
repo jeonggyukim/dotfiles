@@ -489,9 +489,9 @@
       :ensure t
       )
     ;(load-theme 'zenburn t)
-    (load-theme 'leuven t)
+    ;(load-theme 'leuven t)
     ;(load-theme 'leuven-dark t)
-    ;(load-theme 'monokai t)
+    (load-theme 'monokai t)
 
     ;; (if (not (display-graphic-p))
     ;;     (set-face-background hl-line-face "gray13")
