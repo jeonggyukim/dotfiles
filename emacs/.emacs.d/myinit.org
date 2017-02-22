@@ -630,60 +630,60 @@ python-environment-directory
       :ensure auctex
       :config
       (progn
-        (add-hook 'LaTeX-mode-hook 'turn-on-reftex)
-        (setq reftex-plug-into-auctex t)
-        (setq tex-mode-hook 
-  	    '(lambda nil (setq fill-column 70)
-  	       (auto-fill-mode 1))
-  	    )
-
-        (setq TeX-auto-save t)
-        (setq TeX-parse-self t)
-        (setq TeX-PDF-mode t)
+        ;; Automatic Parsing of TeX Files
+        ;; see https://www.gnu.org/software/auctex/manual/auctex/Parsing-Files.html
+        (setq Tex-parse-self t) ; enable parse on load
+        (setq TeX-auto-save t)  ; enable parse on save
+        (setq TeX-PDF-mode t)   ; to compile documents to PDF by default
         (setq-default TeX-master nil)
 
-        (add-hook 'LaTeX-mode-hook 'visual-line-mode)
-        (add-hook 'LaTeX-mode-hook 'flyspell-mode)
+        ; auto-fill-mode
+        (add-hook 'LaTeX-mode-hook '(lambda nil
+    				  (setq fill-column 70)
+    				  (auto-fill-mode)))
+        (add-hook 'LaTeX-mode-hook 'turn-on-reftex)
+        (setq reftex-plug-into-auctex t)
         (add-hook 'LaTeX-mode-hook 'LaTeX-math-mode)
-        (defun ac-LaTeX-mode-setup () ; add ac-sources to default ac-sources
+        (add-hook 'LaTeX-mode-hook 'visual-line-mode)
+        ;(add-hook 'LaTeX-mode-hook 'flyspell-mode)
+
+        ; add ac-sources to default ac-sources
+        (defun ac-LaTeX-mode-setup () 
   	(setq ac-sources
   	      (append '(ac-source-math-unicode
   			ac-source-math-latex
-  			ac-source-latex-commands)
-  		      ac-sources))
+  			ac-source-latex-commands) ac-sources))
   	)
         (add-hook 'LaTeX-mode-hook 'ac-LaTeX-mode-setup)
         (setq ac-math-unicode-in-math-p t)
     
         (add-hook 'LaTeX-mode-hook
-  		(lambda () (local-set-key (kbd "<S-s-mouse-1>") #'TeX-view))
-  		)
-    
+    	      (lambda () (local-set-key (kbd "<S-s-mouse-1>") #'TeX-view))
+    	      )
         ;; Emacs + Synctex + Skim: How to correctly set up syncronization?
         ;; http://stackoverflow.com/questions/7899845/emacs-synctex-skim-how-to-correctly-set-up-syncronization-none-of-the-exi
         ;; Use Skim as viewer, enable source <-> PDF sync
         ;; make latexmk available via C-c C-c
         ;; Note: SyncTeX is setup via ~/.latexmkrc (see below)
         (add-hook 'LaTeX-mode-hook (lambda ()
-  				   (push
-  				    '("latexmk" "latexmk -pdf %s" TeX-run-TeX nil t
-  				      :help "Run latexmk on file")
-  				    TeX-command-list)))
-        (add-hook 'TeX-mode-hook '(lambda () (setq TeX-command-default "latexmk")))
-    
+  				 (push
+                            	  '("latexmk" "latexmk -pdf %s" TeX-run-TeX nil t
+                            	    :help "Run latexmk on file")
+                            	  TeX-command-list)))
+        (add-hook 'LaTeX-mode-hook '(lambda () (setq TeX-command-default "latexmk")))
+        ;; in ~/.latexmkrc
+        ;; $pdflatex = 'pdflatex -interaction=nonstopmode -synctex=1 %O %S';
+        ;; $pdf_previewer = 'open -a skim';
+        ;; $clean_ext = 'bbl rel %R-blx.bib %R.synctex.gz';
+
         ;; use Skim as default pdf viewer
         ;; Skim's displayline is used for forward search (from .tex to .pdf)
         ;; option -b highlights the current line; option -g opens Skim in the background
         (setq TeX-view-program-selection '((output-pdf "PDF Viewer")))
         (setq TeX-view-program-list
-  	    '(("PDF Viewer"
-  	       "/Applications/Skim.app/Contents/SharedSupport/displayline -b -g %n %o %b")))
-    
-    ;;; in ~/.latexmkrc
-  					  ; $pdflatex = 'pdflatex -interaction=nonstopmode -synctex=1 %O %S';
-  					  ; $pdf_previewer = 'open -a skim';
-  					  ; $clean_ext = 'bbl rel %R-blx.bib %R.synctex.gz';
-    
+        '(("PDF Viewer"
+         "/Applications/Skim.app/Contents/SharedSupport/displayline -b -g %n %o %b")))
+
         )
       )
 
