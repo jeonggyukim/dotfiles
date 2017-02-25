@@ -3,7 +3,7 @@
 * misc interface tweaks
   #+BEGIN_SRC emacs-lisp
     (setq user-full-name "Jeong-Gyu Kim"
-          user-mail-address "jgkim@astro.snu.ac.kr")
+  	user-mail-address "jgkim@astro.snu.ac.kr")
 
     ;(setq initial-major-mode 'text-mode)
     (setq inhibit-startup-message t)
@@ -17,7 +17,8 @@
     (setq delete-old-versions -1)
     (setq version-control t)
     (setq vc-make-backup-files t)
-    (setq auto-save-file-name-transforms '((".*" "~/.emacs.d/auto-save-list/" t)))
+    (setq auto-save-file-name-transforms
+  	'((".*" "~/.emacs.d/auto-save-list/" t)))
 
     ;Handy way of getting back to previous places.
     (bind-key "C-x p" 'pop-to-mark-command)
@@ -54,8 +55,8 @@
     ;; (global-set-key "\C-x\C-k" 'kill-region)
     ;; (global-set-key "\C-c\C-k" 'kill-region)
 
-              			      ;(global-set-key "\C-x\C-m" 'execute-extended-command)
-              			      ;(global-set-key "\C-c\C-m" 'execute-extended-command)
+                			    ;(global-set-key "\C-x\C-m" 'execute-extended-command)
+                			    ;(global-set-key "\C-c\C-m" 'execute-extended-command)
 
     (define-key input-decode-map "\e[1;2D" [S-left])
     (define-key input-decode-map "\e[1;2C" [S-right])
@@ -620,6 +621,14 @@ python-environment-directory
 
 * latex
   #+BEGIN_SRC emacs-lisp
+
+    ;; make macro
+    ;; http://www.gnu.org/software/emacs/manual/html_node/emacs/Save-Keyboard-Macro.html#Save-Keyboard-Macro
+    (fset 'mk
+       (lambda (&optional arg) "Keyboard
+       macro." (interactive "p") (kmacro-exec-ring-item (quote ([134217761
+       109 97 107 101 return 24 49] 0 "%d")) arg)))
+
     ;; reference
     ;; http://www.stefanom.org/setting-up-a-nice-auctex-environment-on-mac-os-x/
 
@@ -639,8 +648,8 @@ python-environment-directory
 
         ; auto-fill-mode
         (add-hook 'LaTeX-mode-hook '(lambda nil
-    				  (setq fill-column 70)
-    				  (auto-fill-mode)))
+      				(setq fill-column 70)
+      				(auto-fill-mode)))
         (add-hook 'LaTeX-mode-hook 'turn-on-reftex)
         (setq reftex-plug-into-auctex t)
         (add-hook 'LaTeX-mode-hook 'LaTeX-math-mode)
@@ -649,27 +658,27 @@ python-environment-directory
 
         ; add ac-sources to default ac-sources
         (defun ac-LaTeX-mode-setup () 
-  	(setq ac-sources
-  	      (append '(ac-source-math-unicode
-  			ac-source-math-latex
-  			ac-source-latex-commands) ac-sources))
-  	)
+        (setq ac-sources
+    	    (append '(ac-source-math-unicode
+    		      ac-source-math-latex
+    		      ac-source-latex-commands) ac-sources))
+        )
         (add-hook 'LaTeX-mode-hook 'ac-LaTeX-mode-setup)
         (setq ac-math-unicode-in-math-p t)
-    
+
         (add-hook 'LaTeX-mode-hook
-    	      (lambda () (local-set-key (kbd "<S-s-mouse-1>") #'TeX-view))
-    	      )
+      	    (lambda () (local-set-key (kbd "<S-s-mouse-1>") #'TeX-view))
+      	    )
         ;; Emacs + Synctex + Skim: How to correctly set up syncronization?
         ;; http://stackoverflow.com/questions/7899845/emacs-synctex-skim-how-to-correctly-set-up-syncronization-none-of-the-exi
         ;; Use Skim as viewer, enable source <-> PDF sync
         ;; make latexmk available via C-c C-c
         ;; Note: SyncTeX is setup via ~/.latexmkrc (see below)
         (add-hook 'LaTeX-mode-hook (lambda ()
-  				 (push
-                            	  '("latexmk" "latexmk -pdf %s" TeX-run-TeX nil t
-                            	    :help "Run latexmk on file")
-                            	  TeX-command-list)))
+    			       (push
+  				'("latexmk" "latexmk -pdf %s" TeX-run-TeX nil t
+                              	  :help "Run latexmk on file")
+  				TeX-command-list)))
         (add-hook 'LaTeX-mode-hook '(lambda () (setq TeX-command-default "latexmk")))
         ;; in ~/.latexmkrc
         ;; $pdflatex = 'pdflatex -interaction=nonstopmode -synctex=1 %O %S';
