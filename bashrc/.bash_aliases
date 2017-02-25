@@ -7,10 +7,10 @@ alias mv='mv -i' # Prevents accidentally clobbering files.
 alias ..='cd ..'
 
 # The ubiquitous 'll': directories first, with alphanumeric sorting:
-alias ll="ls -lF" # --group-directories-first"
-alias la='ll -Aa'           #  Show hidden files.
-alias ld='ls -ld */'
-alias l='ls -CF'
+alias ll="ls -lFh"
+alias la='ll -Aah'           #  Show hidden files.
+alias ld='ls -ldh */'
+alias l='ls -CFh'
 
 alias grep='grep --color=always'
 alias fgrep='fgrep --color=auto'
