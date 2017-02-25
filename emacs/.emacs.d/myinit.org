@@ -1,13 +1,13 @@
 #+STARTUP: overview
 
-* misc interface tweaks
+* misc tweaks
   #+BEGIN_SRC emacs-lisp
     (setq user-full-name "Jeong-Gyu Kim"
-  	user-mail-address "jgkim@astro.snu.ac.kr")
+        user-mail-address "jgkim@astro.snu.ac.kr")
 
-    ;(setq initial-major-mode 'text-mode)
+    (setq initial-major-mode 'text-mode)
+    (setq initial-scratch-message "")
     (setq inhibit-startup-message t)
-
     (if (not (display-graphic-p))
         (menu-bar-mode -1)
       )
@@ -18,7 +18,7 @@
     (setq version-control t)
     (setq vc-make-backup-files t)
     (setq auto-save-file-name-transforms
-  	'((".*" "~/.emacs.d/auto-save-list/" t)))
+        '((".*" "~/.emacs.d/auto-save-list/" t)))
 
     ;Handy way of getting back to previous places.
     (bind-key "C-x p" 'pop-to-mark-command)
@@ -50,13 +50,11 @@
     ;; change some key bindings
     ;; 10 Specific Ways to Improve Your Productivity With Emacs
     ;; https://sites.google.com/site/steveyegge2/effective-emacs
-
     ;; (global-set-key "\C-w" 'backward-kill-word)
     ;; (global-set-key "\C-x\C-k" 'kill-region)
     ;; (global-set-key "\C-c\C-k" 'kill-region)
-
-                			    ;(global-set-key "\C-x\C-m" 'execute-extended-command)
-                			    ;(global-set-key "\C-c\C-m" 'execute-extended-command)
+    ;; (global-set-key "\C-x\C-m" 'execute-extended-command)
+    ;; (global-set-key "\C-c\C-m" 'execute-extended-command)
 
     (define-key input-decode-map "\e[1;2D" [S-left])
     (define-key input-decode-map "\e[1;2C" [S-right])
@@ -85,10 +83,22 @@
       "Map KEY from escape sequence \"\e[emacs-KEY\."
       (define-key function-key-map (concat "\e[emacs-" key) (kbd key)))
 
+    (defmacro hook-into-modes (function mode-hooks)
+      "Add FUNCTION to hooks in MODE-HOOKS."
+      `(dolist (hook ,mode-hooks)
+         (add-hook hook ,function)))
+
   #+END_SRC
 * misc custom functions,macros
-  - edit and load ~/.emacs, ~/.emacs.d/myinit.org file
+  - macros, edit, load init files, etc
     #+BEGIN_SRC emacs-lisp
+      ;; make macro
+      ;; http://www.gnu.org/software/emacs/manual/html_node/emacs/Save-Keyboard-Macro.html#Save-Keyboard-Macro
+      (fset 'mk
+    	(lambda (&optional arg) "Keyboard
+      macro." (interactive "p") (kmacro-exec-ring-item (quote ([134217761
+    							    109 97 107 101 return 24 49] 0 "%d")) arg)))
+
       ;; eem - Edit the .emacs file
       (defun eem ()
         (interactive)
@@ -149,7 +159,7 @@
 
       (global-set-key (kbd "C-x |") 'window-toggle-split-direction)
   #+END_SRC
-  - show-paren
+  - show matching parenthesis offscreen in the minibuffer
     #+BEGIN_SRC emacs-lisp
       ;; http://www.emacswiki.org/emacs/ShowParenMode
       ;; When the matching paren is offscreen, show-paren-mode highlights
@@ -168,6 +178,31 @@
     			       (blink-matching-open))))
           (when matching-text (message matching-text))))
 
+    #+END_SRC
+  - make C-w kill-region or backward-kill-word
+    #+BEGIN_SRC emacs-lisp
+      ;;; Code:
+      (defun kill-region-or-backward-kill-word (arg)
+        "If mark is active kill the region else backward kill word.
+      With argument ARG, do this that many times.
+      Traditionally Unix uses `C-w' for backward kill word.  Preserve
+      Emacs default of `kill-region' if the mark is active, otherwise
+      fallback to `backward-kill-word'.  Also fix `backward-kill-word'
+      so that it stops at whitespace."
+        (interactive "p")
+        (defun backward-kill-word-without-spaces (arg)
+          "Wrap backward-kill-word to swallow spaces separate from words."
+          (if (looking-back "\\s-+") ; whitespace
+    	  (kill-region (point)
+    		       (progn
+    			 (re-search-backward "\\S-") ; not whitespace
+    			 (forward-char 1)
+    			 (point)))
+    	(backward-kill-word arg)))
+        (if mark-active
+    	(kill-region (point) (mark))
+          (backward-kill-word-without-spaces arg)))
+      (bind-key "C-w" 'kill-region-or-backward-kill-word)
     #+END_SRC
   - quick copy,cut line
     #+BEGIN_SRC emacs-lisp
@@ -204,7 +239,6 @@
     #+BEGIN_SRC emacs-lisp
       (defun my/smarter-move-beginning-of-line (arg)
           "Move point back to indentation of beginning of line.
-
       Move point to the first non-whitespace character on this line.
       If point is already there, move to the beginning of the line.
       Effectively toggle between the first non-whitespace character and
@@ -224,7 +258,6 @@
     	(back-to-indentation)
     	(when (= orig-point (point))
     	  (move-beginning-of-line 1))))
-
       ;; remap C-a to `smarter-move-beginning-of-line'
       (global-set-key [remap move-beginning-of-line]
     		  'my/smarter-move-beginning-of-line)
@@ -273,23 +306,22 @@
   - smart mode line
     #+BEGIN_SRC emacs-lisp
       (use-package smart-mode-line
-        :ensure t
         :config
-	(setq sml/no-confirm-load-theme t)
+        (setq sml/no-confirm-load-theme t)
         (setq sml/theme 'dark)
         (sml/setup)
         )
     #+END_SRC
-  - fci
+  - fci mode
     #+BEGIN_SRC emacs-lisp
       (use-package fill-column-indicator
-        :ensure t
-        :config
+        :init
+        (hook-into-modes 'fci-mode '(prog-mode-hook))
+        ;; (add-hook 'c-mode-hook 'turn-on-fci-mode)
+        ;; (add-hook 'emacs-lisp-mode-hook 'turn-on-fci-mode)
+        (add-hook 'LaTex-mode-hook 'turn-on-fci-mode)
         (setq fci-rule-color "darkblue")
         (setq fci-rule-width 1)
-        (add-hook 'c-mode-hook 'turn-on-fci-mode)
-        (add-hook 'emacs-lisp-mode-hook 'turn-on-fci-mode)
-        (add-hook 'LaTex-mode-hook 'turn-on-fci-mode)
         )
 
     #+END_SRC
@@ -297,7 +329,7 @@
   - hungry delete
     #+BEGIN_SRC emacs-lisp
       (use-package hungry-delete
-        :defer 1
+        :defer t
         :diminish (hungry-delete-mode)
         :config
         (setq hungry-delete-chars-to-skip " \t\r\f\v")
@@ -335,22 +367,11 @@
         )
 
     #+END_SRC
-  - undo-tree
-    #+BEGIN_SRC emacs-lisp
-      (use-package undo-tree
-        :defer 2
-	:diminish (undo-tree-mode)
-	:config
-	(global-undo-tree-mode 1)
-	(setq undo-tree-visualizer-diff t)
-        )
-    #+END_SRC
   - drag stuff
     #+BEGIN_SRC emacs-lisp
       (use-package drag-stuff
-        :defer 2
 	:diminish (drag-stuff-mode)
-        :config
+        :init
         (drag-stuff-global-mode 1)
 	(drag-stuff-define-keys)
 	(add-to-list 'drag-stuff-except-modes 'org-mode)
@@ -359,21 +380,18 @@
 	;(provide 'init-drag-stuff)
 	)
     #+END_SRC
-  - beacon mode, try
+  - which-key, beacon mode, try
     #+BEGIN_SRC emacs-lisp
       (use-package beacon
-        :config
+      :config
         (beacon-mode 1)
         ; (setq beacon-color "#666600")
         )
-
-      (use-package try)
-    #+END_SRC
-  - which-key
-    #+BEGIN_SRC emacs-lisp
+      (use-package try
+        :defer t
+        )
       (use-package which-key
-        :ensure t
-        :config 
+        :init
         (which-key-mode)
         (which-key-setup-minibuffer)
         )
@@ -381,23 +399,19 @@
 * auto-complete
   #+BEGIN_SRC emacs-lisp
     (use-package auto-complete
-      :ensure t
       :config
       (ac-config-default)
       (setq ac-delay 0.2)
       (set-default 'ac-sources
-  		 '(ac-source-words-in-same-mode-buffers))
+    	       '(ac-source-words-in-same-mode-buffers))
       (global-auto-complete-mode t)
       (bind-keys :map ac-complete-mode-map
-  	       ("C-s" . ac-isearch))
-
+    	     ("C-s" . ac-isearch))
       (setq ac-use-menu-map t)
       (setq ac-auto-start 4)
       (ac-set-trigger-key "TAB")
       )
-
   #+END_SRC
-
 * ivy,swiper,counsel,smex,avy
   #+BEGIN_SRC emacs-lisp
     (use-package smex
@@ -479,35 +493,40 @@
 * color-theme,winner-mode,ace-window
   #+BEGIN_SRC emacs-lisp
     (use-package color-theme
-      :ensure t)
+      :defer t)
     (use-package zenburn-theme
-      :ensure t
+      :defer t
         )
     (use-package leuven-theme
-      :ensure t
+      :defer t
       )
     (use-package monokai-theme
-      :ensure t
+      :defer t
       )
     ;(load-theme 'zenburn t)
     ;(load-theme 'leuven t)
     ;(load-theme 'leuven-dark t)
     (load-theme 'monokai t)
-
     ;; (if (not (display-graphic-p))
     ;;     (set-face-background hl-line-face "gray13")
     ;;   )
 
     (use-package ace-window
-      :ensure t
-      :init
-      (global-set-key (kbd "M-p") 'ace-window)
+      :bind ("M-p" . ace-window)
+    ;;  (global-set-key (kbd "M-p") 'ace-window)
+      :config
+      ;; use bigger font when in graphics mode
       (when (display-graphic-p)
         (custom-set-faces
          '(aw-leading-char-face
-         ((t (:inherit ace-jump-face-foreground :height 3.0))))))
+         ((t (:inherit ace-jump-face-foreground :height 3.0)))))
+        )
       )
+
     (use-package winner
+      ;; :defer t
+      ;; :bind (("C-c <left>" . winner-undo)
+      ;;    ("C-c <right>" . winner-redo))
       :config
       (winner-mode)
       )
@@ -517,8 +536,8 @@
 * org bullets
   #+BEGIN_SRC emacs-lisp
     (use-package org-bullets
-      :ensure t
-      :config
+      :defer t
+      :init
       (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1)))
       )
 #+END_SRC
@@ -526,56 +545,60 @@
   [[https://github.com/yjwen/org-reveal]]
   #+BEGIN_SRC emacs-lisp
     (use-package ox-reveal
-      :ensure ox-reveal)
+      :defer t)
     (setq org-reveal-root "http://cdn.jsdelivr.net/reveal.js/3.0.0/")
     (setq org-reveal-mathjax t)
     (use-package htmlize
-      :ensure t)
+      :defer t)
   #+END_SRC
 
 * flycheck
   #+BEGIN_SRC emacs-lisp
     (use-package flycheck
-      :ensure t
+      :defer t
       :init
-      ;(global-flycheck-mode t)
+      ;; (global-flycheck-mode t)
       (setq-default flycheck-disabled-checkers '(emacs-lisp-checkdoc))
       )
     (use-package flycheck-pyflakes
-      :ensure t
-      :init
+      :defer t
       )
   #+END_SRC
 * agressive indent
   #+BEGIN_SRC emacs-lisp
     (use-package aggressive-indent
-      :ensure t
-      :config
-      ;(add-hook 'emacs-lisp-mode-hook #'aggressive-indent-mode)
+      ;; :disabled
+      :defer t
+      :init
+      ;; (add-hook 'emacs-lisp-mode-hook #'aggressive-indent-mode)
       (add-hook 'css-mode-hook #'aggressive-indent-mode)
-      (add-to-list
-       'aggressive-indent-dont-indent-if
-       '(and (derived-mode-p 'c++-mode)
-  	   (null (string-match "\\([;{}]\\|\\b\\(if\\|for\\|while\\)\\b\\)"
-  			       (thing-at-point 'line)))))
-  
-      (setq aggressive-indent-excluded-modes
-  	  (remove 'python-mode aggressive-indent-excluded-modes))
+      (add-hook 'c-mode-hook #'aggressive-indent-mode)
+      (add-hook 'c++-mode-hook #'aggressive-indent-mode)  
+      ;; :config
+      ;; ;; don't exlclude python from excluded modes
+      ;; ;; (setq aggressive-indent-excluded-modes
+      ;; ;;   (remove 'python-mode aggressive-indent-excluded-modes))
+      ;; ;; )
+      ;; (add-to-list
+      ;;  'aggressive-indent-dont-indent-if
+      ;;  '(and (derived-mode-p 'c-mode)
+      ;;    (null (string-match "\\([;{}]\\|\\b\\(if\\|for\\|while\\)\\b\\)"
+      ;;     		       (thing-at-point 'line))))
       )
-
-  #+END_SRC
+      #+END_SRC
 * expand region
   #+BEGIN_SRC emacs-lisp
     (use-package expand-region
-      :ensure t
-      :config      
-      ;(global-set-key (kbd "C-=") 'er/expand-region)
-      (my/global-map-and-set-key "C-=" 'er/expand-region)
+      :commands expand-region
+      :init
+      (progn
+        ;; (message "hello expand-region")
+        ;(global-set-key (kbd "C-=") 'er/expand-region)
+        (my/global-map-and-set-key "C-=" 'er/expand-region))
       )
-
   #+END_SRC
 * python
-  - jedi: pip install jedi epc ; M-x jedi:install-server
+  - jedi: need to run in shell 'pip install jedi epc' ; M-x jedi:install-server
   #+BEGIN_SRC emacs-lisp
     ;; Emacs built-in `python' mode
     (use-package python
@@ -586,9 +609,10 @@
 
     ;; https://github.com/emacsmirror/python-mode
     (use-package python-mode
-      :ensure t
-      ;:disabled
+      :defer t
+      ;; :disabled
       :config
+      (setq python-indent 2)
       ;; Use IPython
       (setq-default py-shell-name "ipython")
       (setq-default py-which-bufname "IPython")
@@ -605,37 +629,23 @@
       )
 
     (use-package jedi
-      :ensure t
+      :defer t
       :config
       (add-hook 'python-mode-hook 'jedi:setup)
       (setq jedi:complete-on-dot t) ; automatically start completion after inserting a dot
       )
-
-    (add-hook 'python-mode-hook
-  	'(lambda ()
-        	   (setq python-indent 4)))
-
   #+END_SRC
 
 python-environment-directory
 
 * latex
   #+BEGIN_SRC emacs-lisp
-
-    ;; make macro
-    ;; http://www.gnu.org/software/emacs/manual/html_node/emacs/Save-Keyboard-Macro.html#Save-Keyboard-Macro
-    (fset 'mk
-       (lambda (&optional arg) "Keyboard
-       macro." (interactive "p") (kmacro-exec-ring-item (quote ([134217761
-       109 97 107 101 return 24 49] 0 "%d")) arg)))
-
     ;; reference
     ;; http://www.stefanom.org/setting-up-a-nice-auctex-environment-on-mac-os-x/
-
     ;; (unless (package-installed-p 'auctex)
     ;;   (package-install 'auctex))
-
     (use-package latex
+      :defer t
       :ensure auctex
       :config
       (progn
@@ -646,39 +656,39 @@ python-environment-directory
         (setq TeX-PDF-mode t)   ; to compile documents to PDF by default
         (setq-default TeX-master nil)
 
-        ; auto-fill-mode
+        ;; auto-fill-mode
         (add-hook 'LaTeX-mode-hook '(lambda nil
-      				(setq fill-column 70)
-      				(auto-fill-mode)))
+  				    (setq fill-column 70)
+  				    (auto-fill-mode)))
         (add-hook 'LaTeX-mode-hook 'turn-on-reftex)
         (setq reftex-plug-into-auctex t)
         (add-hook 'LaTeX-mode-hook 'LaTeX-math-mode)
         (add-hook 'LaTeX-mode-hook 'visual-line-mode)
-        ;(add-hook 'LaTeX-mode-hook 'flyspell-mode)
+        ;;(add-hook 'LaTex-mode-hook 'turn-on-fci-mode)
 
-        ; add ac-sources to default ac-sources
+        ;; (add-hook 'LaTeX-mode-hook 'flyspell-mode)
+        ;; add ac-sources to default ac-sources
         (defun ac-LaTeX-mode-setup () 
-        (setq ac-sources
-    	    (append '(ac-source-math-unicode
-    		      ac-source-math-latex
-    		      ac-source-latex-commands) ac-sources))
-        )
+  	(setq ac-sources
+  	      (append '(ac-source-math-unicode
+  			ac-source-math-latex
+  			ac-source-latex-commands) ac-sources))
+  	)
         (add-hook 'LaTeX-mode-hook 'ac-LaTeX-mode-setup)
         (setq ac-math-unicode-in-math-p t)
-
+    
         (add-hook 'LaTeX-mode-hook
-      	    (lambda () (local-set-key (kbd "<S-s-mouse-1>") #'TeX-view))
-      	    )
+  		(lambda () (local-set-key (kbd "<S-s-mouse-1>") #'TeX-view)))
         ;; Emacs + Synctex + Skim: How to correctly set up syncronization?
         ;; http://stackoverflow.com/questions/7899845/emacs-synctex-skim-how-to-correctly-set-up-syncronization-none-of-the-exi
         ;; Use Skim as viewer, enable source <-> PDF sync
         ;; make latexmk available via C-c C-c
         ;; Note: SyncTeX is setup via ~/.latexmkrc (see below)
         (add-hook 'LaTeX-mode-hook (lambda ()
-    			       (push
-  				'("latexmk" "latexmk -pdf %s" TeX-run-TeX nil t
-                              	  :help "Run latexmk on file")
-  				TeX-command-list)))
+  				   (push
+  				    '("latexmk" "latexmk -pdf %s" TeX-run-TeX nil t
+  				      :help "Run latexmk on file")
+  				    TeX-command-list)))
         (add-hook 'LaTeX-mode-hook '(lambda () (setq TeX-command-default "latexmk")))
         ;; in ~/.latexmkrc
         ;; $pdflatex = 'pdflatex -interaction=nonstopmode -synctex=1 %O %S';
@@ -690,13 +700,11 @@ python-environment-directory
         ;; option -b highlights the current line; option -g opens Skim in the background
         (setq TeX-view-program-selection '((output-pdf "PDF Viewer")))
         (setq TeX-view-program-list
-        '(("PDF Viewer"
-         "/Applications/Skim.app/Contents/SharedSupport/displayline -b -g %n %o %b")))
+  	    '(("PDF Viewer"
+  	       "/Applications/Skim.app/Contents/SharedSupport/displayline -b -g %n %o %b")))
 
         )
       )
-
-
 
   #+END_SRC
 
