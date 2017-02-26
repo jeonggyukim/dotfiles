@@ -38,6 +38,9 @@ shopt -s no_empty_cmd_completion
 shopt -s cmdhist
 shopt -s histappend histreedit histverify
 shopt -s extglob       # Necessary for programmable completion.
+if [ "${BASH_VERSINFO}" -ge 4 ]; then
+    shopt -s autocd
+fi
 
 # If set, the pattern "**" used in a pathname expansion context will
 # match all files and zero or more directories and subdirectories.
