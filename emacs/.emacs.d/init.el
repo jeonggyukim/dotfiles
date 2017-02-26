@@ -23,7 +23,7 @@
   (require 'use-package))
 (require 'diminish)     ;; if you use :diminish
 (require 'bind-key)     ;; if you use any :bind variant
-(setq use-package-verbose t)
+;(setq use-package-verbose t)
 (setq use-package-always-ensure t)
 
 (setq custom-file "~/.emacs.d/custom.el")

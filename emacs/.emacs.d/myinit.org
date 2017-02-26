@@ -1,37 +1,49 @@
 #+STARTUP: overview
 
+# Many code snippits shamelessly stolen from various websites (mostly github)
+
 * misc tweaks
   #+BEGIN_SRC emacs-lisp
     (setq user-full-name "Jeong-Gyu Kim"
-        user-mail-address "jgkim@astro.snu.ac.kr")
-
+  	user-mail-address "jgkim@astro.snu.ac.kr")
     (setq initial-major-mode 'text-mode)
     (setq initial-scratch-message "")
     (setq inhibit-startup-message t)
     (if (not (display-graphic-p))
-        (menu-bar-mode -1)
-      )
+        (menu-bar-mode 0))
+    (tool-bar-mode -1)
+    (setq ring-bell-function 'ignore)
 
     ;; backups
-    (setq backup-directory-alist '(("." . "~/.emacs.d/backups")))
-    (setq delete-old-versions -1)
-    (setq version-control t)
-    (setq vc-make-backup-files t)
+    (setq backup-by-copying t
+        delete-old-versions t
+        kept-new-versions 4
+        kept-old-versions 2
+        version-control t
+        vc-make-backup-files t
+        backup-directory-alist '(("." . "~/.emacs.d/backups"))
+        )
+
+    (setq large-file-warning-threshold (* 100 1000 1000)) ; 100 MB
     (setq auto-save-file-name-transforms
         '((".*" "~/.emacs.d/auto-save-list/" t)))
 
-    ;Handy way of getting back to previous places.
+    ;; Handy way of getting back to previous places.
     (bind-key "C-x p" 'pop-to-mark-command)
     (setq set-mark-command-repeat-pop t)
+    ;; scrolling
+    (setq mouse-wheel-scroll-amount '(1 ((shift) . 2))) ;; one line at a time
+    (setq mouse-wheel-progressive-speed nil) ;; don't accelerate scrolling
 
     ;; linum
     (add-hook 'prog-mode-hook 'linum-mode)
-    (setq linum-format "%4d \u2502")
+    (setq linum-format "%4d\u2502")
 
     (setq sentence-end-double-space nil)
     (setq shell-command-switch "-ic")
     (setq-default fill-column 80)
-    (tool-bar-mode -1)
+
+
     (setq shift-select-mode t)
     (global-hl-line-mode t)
     (which-function-mode t)
@@ -43,6 +55,11 @@
 
     (if (eq system-type 'darwin)
         (set-default-font "Monaco 18"))
+    (when (string= system-type "darwin") ; alternative expression
+      (setq delete-by-moving-to-trash t
+            trash-directory (expand-file-name ".Trash" (getenv "HOME")))
+      )
+
 
     ;;don’t kill-buffer, kill-this-buffer instead
     (global-set-key (kbd "C-x k") 'kill-this-buffer)
@@ -75,7 +92,7 @@
     ;; http://stackoverflow.com/questions/10660060/how-do-i-bind-c-in-emacs
     (defun my/global-map-and-set-key (key command &optional prefix suffix)
       "`my/map-key' KEY then `global-set-key' KEY with COMMAND.
-    PREFIX or SUFFIX can wrap the key when passing to `global-set-key'."
+        PREFIX or SUFFIX can wrap the key when passing to `global-set-key'."
       (my/map-key key)
       (global-set-key (kbd (concat prefix key suffix)) command))
 
@@ -95,9 +112,10 @@
       ;; make macro
       ;; http://www.gnu.org/software/emacs/manual/html_node/emacs/Save-Keyboard-Macro.html#Save-Keyboard-Macro
       (fset 'mk
-    	(lambda (&optional arg) "Keyboard
-      macro." (interactive "p") (kmacro-exec-ring-item (quote ([134217761
-    							    109 97 107 101 return 24 49] 0 "%d")) arg)))
+    	(lambda (&optional arg) "Keyboard macro."
+    	  (interactive "p")
+    	  (kmacro-exec-ring-item
+    	   (quote ([134217761 109 97 107 101 return 24 49] 0 "%d")) arg)))
 
       ;; eem - Edit the .emacs file
       (defun eem ()
@@ -122,43 +140,6 @@
         (find-file "~/.bash_aliases")
         )
     #+END_SRC
-  - window-split-direction
-    #+BEGIN_SRC emacs-lisp
-      ;; Vertical split shows more of each line, horizontal split shows more
-      ;; lines. This code toggles between them. It only works for frames
-      ;; with exactly two windows. The top window goes to the left or
-      ;; vice-versa. I was motivated by ediff-toggle-split and helped by
-      ;; TransposeWindows. There may well be better ways to write this.
-      ;; source: http://www.emacswiki.org/emacs/ToggleWindowSplit
-
-      (defun window-toggle-split-direction ()
-        "Switch window split from horizontally to vertically, or vice versa.
-      i.e. change right window to bottom, or change bottom window to right."
-        (interactive)
-        (require 'windmove)
-        (let ((done))
-          (dolist (dirs '((right . down) (down . right)))
-    	(unless done
-              (let* ((win (selected-window))
-    		 (nextdir (car dirs))
-    		 (neighbour-dir (cdr dirs))
-    		 (next-win (windmove-find-other-window nextdir win))
-    		 (neighbour1 (windmove-find-other-window neighbour-dir win))
-    		 (neighbour2 (if next-win (with-selected-window next-win
-                                                (windmove-find-other-window neighbour-dir next-win)))))
-                ;;(message "win: %s\nnext-win: %s\nneighbour1: %s\nneighbour2:%s" win next-win neighbour1 neighbour2)
-                (setq done (and (eq neighbour1 neighbour2)
-                                (not (eq (minibuffer-window) next-win))))
-                (if done
-    		(let* ((other-buf (window-buffer next-win)))
-                      (delete-window next-win)
-                      (if (eq nextdir 'right)
-                          (split-window-vertically)
-                        (split-window-horizontally))
-                      (set-window-buffer (windmove-find-other-window neighbour-dir) other-buf))))))))
-
-      (global-set-key (kbd "C-x |") 'window-toggle-split-direction)
-  #+END_SRC
   - show matching parenthesis offscreen in the minibuffer
     #+BEGIN_SRC emacs-lisp
       ;; http://www.emacswiki.org/emacs/ShowParenMode
@@ -303,12 +284,18 @@
       ;; (global-set-key (kbd "C-M-k") 'nuke-line)
     #+END_SRC
 * misc packages
+  - transport frame
+    #+BEGIN_SRC emacs-lisp
+      (use-package transpose-frame
+        :bind (("C-x |" . transpose-frame))
+        )
+    #+END_SRC
   - smart mode line
     #+BEGIN_SRC emacs-lisp
       (use-package smart-mode-line
         :config
         (setq sml/no-confirm-load-theme t)
-        (setq sml/theme 'dark)
+        (setq sml/theme 'respectful)
         (sml/setup)
         )
     #+END_SRC
@@ -324,8 +311,7 @@
         (setq fci-rule-width 1)
         )
 
-    #+END_SRC
-	
+    #+END_SRC	
   - hungry delete
     #+BEGIN_SRC emacs-lisp
       (use-package hungry-delete
@@ -333,7 +319,6 @@
         :diminish (hungry-delete-mode)
         :config
         (setq hungry-delete-chars-to-skip " \t\r\f\v")
-        ;; code stolen from
         ;; https://github.com/kaushalmodi/.emacs.d/blob/master/setup-files/setup-hungry-delete.el
         ;; Override the default definitions of `hungry-delete-skip-ws-forward' and
         ;; `hungry-delete-skip-ws-backward'; do not delete back-slashes at EOL.
@@ -380,33 +365,80 @@
 	;(provide 'init-drag-stuff)
 	)
     #+END_SRC
-  - which-key, beacon mode, try
+  - recentf, which-key, beacon mode, try
     #+BEGIN_SRC emacs-lisp
+      (use-package recentf
+        ;; get rid of 'find-file-read-only' and replace it with something
+        ;; more useful.
+        :bind (("C-x C-r" . recentf-open-files))
+        :config
+        (recentf-mode)
+        (setq recentf-max-saved-items 50
+    	  recentf-max-menu-items 25)
+        )
+
       (use-package beacon
-      :config
+        :diminish beacon-mode
+        :config
         (beacon-mode 1)
-        ; (setq beacon-color "#666600")
+    					  ; (setq beacon-color "#666600")
         )
       (use-package try
         :defer t
         )
       (use-package which-key
+        :diminish which-key-mode
         :init
         (which-key-mode)
         (which-key-setup-minibuffer)
         )
     #+END_SRC
-* auto-complete
+
+* color-theme,winner-mode,ace-window
   #+BEGIN_SRC emacs-lisp
+    ;; (use-package color-theme
+    ;;   :defer t)
+    (use-package zenburn-theme)
+    ;; (use-package leuven-theme)
+    ;; (use-package monokai-theme
+    ;;   :defer t)
+
+    (use-package ace-window
+      :bind ("M-p" . ace-window)
+      :config
+      ;; use bigger font when in graphics mode
+      (when (display-graphic-p)
+        (custom-set-faces
+         '(aw-leading-char-face
+         ((t (:inherit ace-jump-face-foreground :height 3.0)))))
+        )
+      )
+
+    (use-package winner
+      :config
+      (winner-mode)
+      )
+
+  #+END_SRC
+* smartparen, auto-complete
+  #+BEGIN_SRC emacs-lisp
+    (use-package smartparens
+      :diminish smartparens-mode
+      :init
+      (require 'smartparens-config)
+      (smartparens-global-mode)
+      (show-smartparens-global-mode)
+      )
+
     (use-package auto-complete
       :config
       (ac-config-default)
       (setq ac-delay 0.2)
       (set-default 'ac-sources
-    	       '(ac-source-words-in-same-mode-buffers))
+        	   '(ac-source-words-in-same-mode-buffers))
       (global-auto-complete-mode t)
       (bind-keys :map ac-complete-mode-map
-    	     ("C-s" . ac-isearch))
+  	 ("C-s" . ac-isearch))
       (setq ac-use-menu-map t)
       (setq ac-auto-start 4)
       (ac-set-trigger-key "TAB")
@@ -414,14 +446,9 @@
   #+END_SRC
 * ivy,swiper,counsel,smex,avy
   #+BEGIN_SRC emacs-lisp
-    (use-package smex
-      :ensure t)
-
-    (use-package counsel
-      :ensure t)
-
+    (use-package smex)
+    (use-package counsel)
     (use-package ivy
-      :ensure t
       :diminish (ivy-mode)
       :bind (("C-x b" . ivy-switch-buffer))
       :config
@@ -478,7 +505,6 @@
       )
 
     (use-package avy
-      :ensure t
       :bind (
          ("M-s" . avy-goto-char-2)
          ("M-g g" . avy-goto-line)
@@ -488,49 +514,6 @@
       (when (display-graphic-p)
         (setq avy-background t))
       )
-  #+END_SRC
-
-* color-theme,winner-mode,ace-window
-  #+BEGIN_SRC emacs-lisp
-    (use-package color-theme
-      :defer t)
-    (use-package zenburn-theme
-      :defer t
-        )
-    (use-package leuven-theme
-      :defer t
-      )
-    (use-package monokai-theme
-      :defer t
-      )
-    ;(load-theme 'zenburn t)
-    ;(load-theme 'leuven t)
-    ;(load-theme 'leuven-dark t)
-    (load-theme 'monokai t)
-    ;; (if (not (display-graphic-p))
-    ;;     (set-face-background hl-line-face "gray13")
-    ;;   )
-
-    (use-package ace-window
-      :bind ("M-p" . ace-window)
-    ;;  (global-set-key (kbd "M-p") 'ace-window)
-      :config
-      ;; use bigger font when in graphics mode
-      (when (display-graphic-p)
-        (custom-set-faces
-         '(aw-leading-char-face
-         ((t (:inherit ace-jump-face-foreground :height 3.0)))))
-        )
-      )
-
-    (use-package winner
-      ;; :defer t
-      ;; :bind (("C-c <left>" . winner-undo)
-      ;;    ("C-c <right>" . winner-redo))
-      :config
-      (winner-mode)
-      )
-
   #+END_SRC
 
 * org bullets
@@ -573,7 +556,7 @@
       ;; (add-hook 'emacs-lisp-mode-hook #'aggressive-indent-mode)
       (add-hook 'css-mode-hook #'aggressive-indent-mode)
       (add-hook 'c-mode-hook #'aggressive-indent-mode)
-      (add-hook 'c++-mode-hook #'aggressive-indent-mode)  
+      (add-hook 'c++-mode-hook #'aggressive-indent-mode)
       ;; :config
       ;; ;; don't exlclude python from excluded modes
       ;; ;; (setq aggressive-indent-excluded-modes

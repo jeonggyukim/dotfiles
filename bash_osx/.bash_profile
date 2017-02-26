@@ -93,9 +93,12 @@ export CSCOPE_EDITOR=`which emacs`
 #source ~/Applications/exelis/idl83/bin/idl_setup.bash
 #export IDL_STARTUP=~/.idlstartup.pro
 
+export MATPLOTLIB="/Users/jgkim/.matplotlib"
+
 # added by Anaconda2 4.0.0 installer
 export PATH="/Users/jgkim/anaconda/bin:$PATH"
-export MATPLOTLIB="/Users/jgkim/.matplotlib"
 export PATH="/usr/local/bin:/Users/jgkim/bin:~/Dropbox/gmc/py/athpy_gmc/w1:$PATH"
+# Add VisIt directory
+export PATH="/Applications/VisIt.app/Contents/Resources/bin:$PATH"
 
 alias mpirun="/usr/local/bin/mpirun"
