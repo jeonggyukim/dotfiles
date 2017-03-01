@@ -28,6 +28,9 @@
 	backup-directory-alist '(("." . "~/.emacs.d/backups"))
 	)
 
+  ;; default web browser
+  (setq browse-url-browser-function 'browse-url-chromium)
+
   (setq large-file-warning-threshold
 	(* 100 1000 1000)) ; 100 MB
   (setq auto-save-file-name-transforms
@@ -53,7 +56,7 @@
   (setq sentence-end-double-space nil) ;; Non-nil means a single space does not
 				       ;; end a sentence.
   (setq shift-select-mode t)
-  (global-hl-line-mode t)
+  ;; (global-hl-line-mode t)
   (which-function-mode t)
   (column-number-mode t)
 
@@ -410,11 +413,11 @@
 
 * theme,winner-mode,ace-window
 #+BEGIN_SRC emacs-lisp
-;; (use-package color-theme)
+  ;; (use-package color-theme)
   ;; (use-package zenburn-theme)
   ;; (use-package leuven-theme)
   ;; (use-package cyberpunk-theme)
-  (use-package monokai-theme)
+  ;; (use-package monokai-theme)
 
   (use-package nyan-mode
     :config
@@ -545,14 +548,23 @@
       )
 #+END_SRC
 * reveal.js
-  [[https://github.com/yjwen/org-reveal]]
-  #+BEGIN_SRC emacs-lisp
-    (use-package ox-reveal
-      :defer t)
-    (setq org-reveal-root "http://cdn.jsdelivr.net/reveal.js/3.0.0/")
-    (setq org-reveal-mathjax t)
-    (use-package htmlize
-      :defer t)
+[[https://github.com/yjwen/org-reveal]]
+#+BEGIN_SRC emacs-lisp
+  (use-package org
+    ;; :mode ((FILE-REGEXP . MAJOR-MODE))
+    ;; FILE-REGEXP is the regular expression for which you want a particular major
+    ;; mode to be enabled. MAJOR-MODE is the name of the major mode that you want
+    ;; to enable (including the -mode part of the major mode name).
+    :mode (("\\.org$" . org-mode))
+    :ensure org-plus-contrib
+    :config
+    (progn
+      (use-package ox-reveal)
+      (setq org-reveal-root "http://cdn.jsdelivr.net/reveal.js/3.0.0/")
+      (setq org-reveal-mathjax t)
+      (use-package htmlize)
+      )
+  )
   #+END_SRC
 
 * flycheck
