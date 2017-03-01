@@ -416,29 +416,30 @@
   ;; (use-package color-theme)
   ;; (use-package zenburn-theme)
   ;; (use-package leuven-theme)
-  ;; (use-package cyberpunk-theme)
+  (if (eq system-type 'darwin)
+      (use-package cyberpunk-theme)
+    )
   ;; (use-package monokai-theme)
 
   (use-package nyan-mode
-    :config
-    (nyan-mode 1)
-    )
-
+               :config
+               (nyan-mode 1)
+               )
   (use-package ace-window
-    :bind ("M-p" . ace-window)
-    :config
-    ;; use bigger font when in graphics mode
-    (when (display-graphic-p)
-      (custom-set-faces
-       '(aw-leading-char-face
-	 ((t (:inherit ace-jump-face-foreground :height 3.0)))))
-      )
-    )
+               :bind ("M-p" . ace-window)
+               :config
+               ;; use bigger font when in graphics mode
+               (when (display-graphic-p)
+                 (custom-set-faces
+                  '(aw-leading-char-face
+                    ((t (:inherit ace-jump-face-foreground :height 3.0)))))
+                 )
+               )
 
   (use-package winner
-    :config
-    (winner-mode)
-    )
+               :config
+               (winner-mode)
+               )
 
 #+END_SRC
 * smartparen, auto-complete
