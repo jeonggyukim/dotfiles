@@ -540,33 +540,32 @@
     )
 #+END_SRC
 
-* org bullets
-  #+BEGIN_SRC emacs-lisp
-    (use-package org-bullets
-      :defer t
-      :init
-      (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1)))
-      )
-#+END_SRC
-* reveal.js
+* org,org-bullets,reveal.js
 [[https://github.com/yjwen/org-reveal]]
 #+BEGIN_SRC emacs-lisp
-  (use-package org
-    ;; :mode ((FILE-REGEXP . MAJOR-MODE))
-    ;; FILE-REGEXP is the regular expression for which you want a particular major
-    ;; mode to be enabled. MAJOR-MODE is the name of the major mode that you want
-    ;; to enable (including the -mode part of the major mode name).
-    :mode (("\\.org$" . org-mode))
-    :ensure org-plus-contrib
-    :config
-    (progn
-      (use-package ox-reveal)
-      (setq org-reveal-root "http://cdn.jsdelivr.net/reveal.js/3.0.0/")
-      (setq org-reveal-mathjax t)
-      (use-package htmlize)
+    (use-package org
+      ;; :mode ((FILE-REGEXP . MAJOR-MODE))
+      ;; FILE-REGEXP is the regular expression for which you want a particular major
+      ;; mode to be enabled. MAJOR-MODE is the name of the major mode that you want
+      ;; to enable (including the -mode part of the major mode name).
+      :mode (("\\.org$" . org-mode))
+      :ensure org-plus-contrib
+      :config
+      (progn
+	(use-package org-bullets
+	  :defer t
+	  :init
+	  (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1)))
+	  )
+	(use-package ox-reveal
+	  :config
+	  (setq org-reveal-root "http://cdn.jsdelivr.net/reveal.js/3.0.0/")
+	  (setq org-reveal-mathjax t)
+	  )
+	;; (use-package htmlize)
+	)
       )
-  )
-  #+END_SRC
+#+END_SRC
 
 * flycheck
   #+BEGIN_SRC emacs-lisp
