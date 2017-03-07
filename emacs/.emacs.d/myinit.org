@@ -16,6 +16,7 @@
   (if (not (display-graphic-p))
      (menu-bar-mode -1))
   (tool-bar-mode -1)
+  (scroll-bar-mode -1)
   (setq ring-bell-function 'ignore)
 
   ;; backups
@@ -27,9 +28,6 @@
 	vc-make-backup-files t
 	backup-directory-alist '(("." . "~/.emacs.d/backups"))
 	)
-
-  ;; default web browser
-  (setq browse-url-browser-function 'browse-url-chromium)
 
   (setq large-file-warning-threshold
 	(* 100 1000 1000)) ; 100 MB
@@ -46,7 +44,7 @@
   ;; http://stackoverflow.com/questions/12224909/is-there-a-way-to-get-my-emacs-to-recognize-my-bash-aliases-and-custom-functions
   ;; -i is for interactive, and -c tells bash to read whatever commands follow
   (setq shell-file-name "bash")
-  (setq shell-command-switch "-ic")
+  (setq shell-command-switch "-c")
 
   ;; linum-mode
   (add-hook 'prog-mode-hook 'linum-mode)
@@ -724,3 +722,20 @@ python-environment-directory
 
   #+END_SRC
 
+* markdown
+  #+BEGIN_SRC emacs-lisp
+    (use-package markdown-mode
+      :commands (markdown-mode gfm-mode)
+      :mode (("README\\.md\\'" . gfm-mode)
+             ("\\.md\\'" . markdown-mode)
+             ("\\.markdown\\'" . markdown-mode))
+      :init (setq markdown-command "multimarkdown")
+      )
+  #+END_SRC
+* ztree
+  #+BEGIN_SRC emacs-lisp
+    (use-package ztree
+      :init
+      (setq ztree-dir-move-focus t)
+      )
+  #+END_SRC
