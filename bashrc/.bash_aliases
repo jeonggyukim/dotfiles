@@ -2,6 +2,12 @@
 
 #alias mkdir='mkdir -p'
 #alias rm='rm -i'
+if [[ $(uname -s) == "Linux" ]]; then
+    alias rm='gvfs-trash'
+elif [[ $(uname -s) == "Darwin" ]]; then
+    alias rm='trash'
+fi
+
 alias cp='cp -i'
 alias mv='mv -i' # Prevents accidentally clobbering files.
 alias ..='cd ..'
