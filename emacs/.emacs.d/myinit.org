@@ -47,7 +47,7 @@
   (setq shell-command-switch "-c")
 
   ;; linum-mode
-  (add-hook 'prog-mode-hook 'linum-mode)
+  ;;(add-hook 'prog-mode-hook 'linum-mode)
   (setq linum-format "%4d\u2502")
   (setq-default fill-column 80)
 
@@ -72,6 +72,7 @@
     (setq delete-by-moving-to-trash t
           trash-directory (expand-file-name ".Trash" (getenv "HOME")))
     )
+
 
   #+END_SRC
 ** change some key-bindings
@@ -443,13 +444,13 @@
 * smartparen, auto-complete
 ** smartparen
 #+BEGIN_SRC emacs-lisp
-  (use-package smartparens
-    :diminish smartparens-mode
-    :init
-    (require 'smartparens-config)
-    (smartparens-global-mode)
-    (show-smartparens-global-mode)
-    )
+  ;; (use-package smartparens
+  ;;   :diminish smartparens-mode
+  ;;   :init
+  ;;   (require 'smartparens-config)
+  ;;   (smartparens-global-mode)
+  ;;   (show-smartparens-global-mode)
+  ;;   )
 #+END_SRC
 ** auto-complete
 #+BEGIN_SRC emacs-lisp
@@ -592,8 +593,8 @@
       :init
       ;; (add-hook 'emacs-lisp-mode-hook #'aggressive-indent-mode)
       (add-hook 'css-mode-hook #'aggressive-indent-mode)
-      (add-hook 'c-mode-hook #'aggressive-indent-mode)
-      (add-hook 'c++-mode-hook #'aggressive-indent-mode)
+      ;; (add-hook 'c-mode-hook #'aggressive-indent-mode)
+      ;; (add-hook 'c++-mode-hook #'aggressive-indent-mode)
       ;; :config
       ;; ;; don't exlclude python from excluded modes
       ;; ;; (setq aggressive-indent-excluded-modes
@@ -620,7 +621,12 @@
 * python
   - jedi: need to run in shell 'pip install jedi epc' ; M-x jedi:install-server
   #+BEGIN_SRC emacs-lisp
+    
+    ;;(add-hook 'python-mode-hook (highlight-indentation-mode 0))
+    ;;(add-hook 'python-mode-hook 'guess-style-guess-tabs-mode)
+
     ;; Emacs built-in `python' mode
+
     (use-package python
       ;:disabled
       :mode (("\\.py\\'" . python-mode))
@@ -632,7 +638,7 @@
       :defer t
       ;; :disabled
       :config
-      (setq python-indent 2)
+      (setq python-indent 4)
       ;; Use IPython
       (setq-default py-shell-name "ipython")
       (setq-default py-which-bufname "IPython")
@@ -654,6 +660,7 @@
       (add-hook 'python-mode-hook 'jedi:setup)
       (setq jedi:complete-on-dot t) ; automatically start completion after inserting a dot
       )
+
   #+END_SRC
 
 python-environment-directory
