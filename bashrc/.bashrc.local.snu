@@ -4,9 +4,13 @@ alias make=$HOME/dotfiles/colormake/colormake.sh
 export LD_LIBRARY_PATH=/usr/local/lib:/usr/lib:/opt/Healpix_3.20/lib
 
 # added by Anaconda 2.2.0 installer
-export PATH="$HOME/bin:/home/jgkim/Dropbox/gmc/py/pkg/athenapy:/home/jgkim/anaconda/bin:$PATH"
+#export PATH="$HOME/bin:/home/jgkim/anaconda/bin:$PATH"
 
-export PYTHONPATH=$PYTHONPATH:~/Dropbox/py/module:~/Dropbox/hii/py/modules:~/Dropbox/gmc/py/athpy_gmc:/usr/local/visit/current/linux-x86_64/lib/site-packages
+# added by Anaconda2 4.4.0 installer
+export PATH="/home/jgkim/anaconda2/bin:$PATH"
+
+export PYTHONPATH="$HOME/Dropbox/gmc/py/athpy/pyathena:$HOME/Dropbox/gmc/py/athpy/:$HOME/Dropbox/gmc/py/athpy_gmc/:$PYTHONPATH"
+export PYTHONSTARTUP="$HOME/.pythonrc.py"
 
 # texmf
 export TEXMFLOCAL=/home/jgkim/.texmf
@@ -17,8 +21,9 @@ export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:/home/$USER/.openmpi/lib/:/home/jgkim/a
 
 # VISIT, ParaView
 export PATH="$PATH:$HOME/local/paraview/bin:/usr/local/visit/bin:~/Dropbox/gmc/py/athpy_gmc/w1"
+export PYTHONPATH="$PYTHONPATH:/usr/local/visit/current/linux-x86_64/lib/site-packages"
+export PYTHONPATH="$HOME/Documents/slug2/:$PYTHONPATH"
 
-#export SLUG_DIR=/home/jgkim/docs/slug2
-#. /usr/local/exelis/idl83/bin/idl_setup.bash
-
-
+# SLUG, DESPOTIC
+export SLUG_DIR="/data/slug2"
+export DESPOTIC_HOME="/data/despotic"
