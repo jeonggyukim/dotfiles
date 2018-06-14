@@ -650,7 +650,9 @@
       ;; switch to the interpreter after executing code
       (setq py-split-windows-on-execute-p t)
       ;; Try to automagically figure out indentation
-      (setq py-smart-indentation t)
+      ;(setq py-indent-offset 4)
+      ;(setq py-smart-indentation nil)
+      ;(setq indent-tabs-mode nil)
       (provide 'setup-python)
       )
 
