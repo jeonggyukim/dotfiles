@@ -19,23 +19,12 @@
 
 ---
 
-## Directories
+## Useful scripts
 
-* bash_osx
-  * .bash_profile : bash startup For MacOSX since iTerm is configures to start as a login shell. Should be merged with bashrc later.
-
-* bashrc
-  * .bashrc : For linux.
-  * .bash_aliases: aliases (used both in linux and osx)
+* bookmarks
+  * bookmarks.sh : bookmark management system for the Bash version 4.0+.
+  * source : https://github.com/jcisio/bookmarks , https://lug.fh-swf.de/shell/
 
 * colormake
   * colormake.sh : colorize make output.
-  * original(?) source : https://github.com/renatosilva/colormake
-
-* emacs: My emacs configuration. Includes init.el and myinit.org. Better to have emacs version >24.5 for smooth org installation.
-  * create ~/.emacs.d directory before stowing.
-
-* git: .git-completion.bash, .git-prompt.sh, .gitconfig, .gitignore_global
-
-* ssh: ssh config
-  * create ~/.ssh directory before stowing.
+  * source : https://github.com/renatosilva/colormake

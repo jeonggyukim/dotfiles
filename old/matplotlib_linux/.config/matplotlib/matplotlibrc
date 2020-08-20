@@ -35,7 +35,9 @@
 # You can also deploy your own backend outside of matplotlib by
 # referring to the module name (which must be in the PYTHONPATH) as
 # 'module://my_backend'.
-backend      : Qt4Agg
+#backend      : Qt4Agg
+# jgkim
+backend      : Qt5Agg
 #backend      : TkAgg
 
 # If you are using the Qt4Agg backend, you can choose here
@@ -97,8 +99,10 @@ lines.linewidth   : 1.5     # line width in points
 # http://matplotlib.org/api/artist_api.html#module-matplotlib.patches
 # information on patch properties
 #patch.linewidth        : 1.0     # edge width in points
-#patch.facecolor        : blue
-#patch.edgecolor        : black
+# jgkim
+patch.facecolor        : blue
+patch.edgecolor        : black
+patch.force_edgecolor   : True
 #patch.antialiased      : True    # render patches in antialised (no jaggies)
 
 ### FONT
@@ -217,12 +221,16 @@ font.size           : 12.0
 # Note that this "custom" mode is unsupported and may go away in the
 # future.
 #mathtext.cal : cursive
-#mathtext.rm  : serif
+
+#jgkim
+mathtext.rm  : serif
 #mathtext.tt  : monospace
 #mathtext.it  : serif:italic
 #mathtext.bf  : serif:bold
 #mathtext.sf  : sans
-#mathtext.fontset : cm # Should be 'cm' (Computer Modern), 'stix',
+
+#jgkim
+mathtext.fontset : cm # Should be 'cm' (Computer Modern), 'stix',
                        # 'stixsans' or 'custom'
 #mathtext.fallback_to_cm : True  # When True, use symbols from the Computer Modern
                                  # fonts when a symbol can not be found in one of
@@ -271,6 +279,10 @@ axes.linewidth      : 1.3     # edge linewidth
                                             # as list of string colorspecs:
                                             # single letter, long name, or
                                             # web-style hex
+# jgkim
+#from cycler import cycler
+axes.prop_cycle    : cycler('color', 'bgrcmyk')
+
 #axes.xmargin        : 0  # x margin.  See `axes.Axes.margins`
 #axes.ymargin        : 0  # y margin See `axes.Axes.margins`
 
@@ -288,6 +300,10 @@ xtick.minor.width    : 1    # minor tick width in points
 #xtick.color          : k      # color of the tick labels
 xtick.labelsize      : large # fontsize of the tick labels
 #xtick.direction      : in     # direction: in, out, or inout
+
+# jgkim
+xtick.top: True
+ytick.right: True
 
 ytick.major.size     : 5      # major tick size in points
 ytick.minor.size     : 3      # minor tick size in points

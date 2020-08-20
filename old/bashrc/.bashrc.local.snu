@@ -1,0 +1,27 @@
+#!/bin/bash
+
+alias make=$HOME/dotfiles/colormake/colormake.sh
+export LD_LIBRARY_PATH="/usr/local/lib:/usr/lib:/opt/Healpix_3.20/lib"
+
+
+# added by Anaconda2 4.4.0 installer
+export PATH="/home/jgkim/anaconda2/bin:$PATH"
+
+export PYTHONPATH="$HOME/Dropbox/tigrad/py/tigradpy/:$HOME/Dropbox/tigrad/py/pyathena:$HOME/Dropbox/gmc/py/athpy/:$HOME/Dropbox/gmc/py/athpy_gmc/:$PYTHONPATH"
+export PYTHONSTARTUP="$HOME/.pythonrc.py"
+
+# texmf
+export TEXMFLOCAL=/home/jgkim/.texmf
+
+# OPEN MPI
+export PATH="$PATH:/home/jgkim/.openmpi/bin"
+export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:/home/$USER/.openmpi/lib"
+
+# VISIT, ParaView
+export PATH="$PATH:$HOME/local/paraview/bin:/usr/local/visit/bin:~/Dropbox/gmc/py/athpy_gmc/w1"
+export PYTHONPATH="$PYTHONPATH:/usr/local/visit/current/linux-x86_64/lib/site-packages"
+export PYTHONPATH="$HOME/Documents/slug2/:$PYTHONPATH"
+
+# SLUG, DESPOTIC
+export SLUG_DIR="/data/slug2"
+export DESPOTIC_HOME="/data/despotic"

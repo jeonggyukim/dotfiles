@@ -47,7 +47,7 @@
   (setq shell-command-switch "-c")
 
   ;; linum-mode
-  (add-hook 'prog-mode-hook 'linum-mode)
+  ;;(add-hook 'prog-mode-hook 'linum-mode)
   (setq linum-format "%4d\u2502")
   (setq-default fill-column 80)
 
@@ -72,6 +72,7 @@
     (setq delete-by-moving-to-trash t
           trash-directory (expand-file-name ".Trash" (getenv "HOME")))
     )
+
 
   #+END_SRC
 ** change some key-bindings
@@ -420,24 +421,24 @@
   ;; (use-package monokai-theme)
 
   (use-package nyan-mode
-               :config
-               (nyan-mode 1)
-               )
+	       :config
+	       (nyan-mode 1)
+	       )
   (use-package ace-window
-               :bind ("M-p" . ace-window)
-               :config
-               ;; use bigger font when in graphics mode
-               (when (display-graphic-p)
-                 (custom-set-faces
-                  '(aw-leading-char-face
-                    ((t (:inherit ace-jump-face-foreground :height 3.0)))))
-                 )
-               )
+	       :bind ("M-p" . ace-window)
+	       :config
+	       ;; use bigger font when in graphics mode
+	       (when (display-graphic-p)
+		 (custom-set-faces
+		  '(aw-leading-char-face
+		    ((t (:inherit ace-jump-face-foreground :height 3.0)))))
+		 )
+	       )
 
   (use-package winner
-               :config
-               (winner-mode)
-               )
+	       :config
+	       (winner-mode)
+	       )
 
 #+END_SRC
 * smartparen, auto-complete
@@ -586,25 +587,25 @@
   #+END_SRC
 * agressive indent
   #+BEGIN_SRC emacs-lisp
-    ;; (use-package aggressive-indent
-    ;;   ;; :disabled
-    ;;   :defer t
-    ;;   :init
-    ;;   ;; (add-hook 'emacs-lisp-mode-hook #'aggressive-indent-mode)
-    ;;   ;; (add-hook 'css-mode-hook #'aggressive-indent-mode)
-    ;;   ;; (add-hook 'c-mode-hook #'aggressive-indent-mode)
-    ;;   ;; (add-hook 'c++-mode-hook #'aggressive-indent-mode)
-    ;;   ;; :config
-    ;;   ;; ;; don't exlclude python from excluded modes
-    ;;   ;; ;; (setq aggressive-indent-excluded-modes
-    ;;   ;; ;;   (remove 'python-mode aggressive-indent-excluded-modes))
-    ;;   ;; ;; )
-    ;;   ;; (add-to-list
-    ;;   ;;  'aggressive-indent-dont-indent-if
-    ;;   ;;  '(and (derived-mode-p 'c-mode)
-    ;;   ;;    (null (string-match "\\([;{}]\\|\\b\\(if\\|for\\|while\\)\\b\\)"
-    ;;   ;;     		       (thing-at-point 'line))))
-    ;;   )
+	;; (use-package aggressive-indent
+	;;   ;; :disabled
+	;;   :defer t
+	;;   :init
+	;;   ;; (add-hook 'emacs-lisp-mode-hook #'aggressive-indent-mode)
+	;;   ;; (add-hook 'css-mode-hook #'aggressive-indent-mode)
+	;;   ;; (add-hook 'c-mode-hook #'aggressive-indent-mode)
+	;;   ;; (add-hook 'c++-mode-hook #'aggressive-indent-mode)
+	;;   ;; :config
+	;;   ;; ;; don't exlclude python from excluded modes
+	;;   ;; ;; (setq aggressive-indent-excluded-modes
+	;;   ;; ;;   (remove 'python-mode aggressive-indent-excluded-modes))
+	;;   ;; ;; )
+	;;   ;; (add-to-list
+	;;   ;;  'aggressive-indent-dont-indent-if
+	;;   ;;  '(and (derived-mode-p 'c-mode)
+	;;   ;;    (null (string-match "\\([;{}]\\|\\b\\(if\\|for\\|while\\)\\b\\)"
+	;;   ;;     		       (thing-at-point 'line))))
+	;;   )
       #+END_SRC
 * expand region
   #+BEGIN_SRC emacs-lisp
@@ -620,7 +621,12 @@
 * python
   - jedi: need to run in shell 'pip install jedi epc' ; M-x jedi:install-server
   #+BEGIN_SRC emacs-lisp
+    
+    ;;(add-hook 'python-mode-hook (highlight-indentation-mode 0))
+    ;;(add-hook 'python-mode-hook 'guess-style-guess-tabs-mode)
+
     ;; Emacs built-in `python' mode
+
     (use-package python
       ;:disabled
       :mode (("\\.py\\'" . python-mode))
@@ -632,7 +638,7 @@
       :defer t
       ;; :disabled
       :config
-      (setq python-indent 2)
+      (setq python-indent 4)
       ;; Use IPython
       (setq-default py-shell-name "ipython")
       (setq-default py-which-bufname "IPython")
@@ -644,7 +650,9 @@
       ;; switch to the interpreter after executing code
       (setq py-split-windows-on-execute-p t)
       ;; Try to automagically figure out indentation
-      (setq py-smart-indentation t)
+      ;(setq py-indent-offset 4)
+      ;(setq py-smart-indentation nil)
+      ;(setq indent-tabs-mode nil)
       (provide 'setup-python)
       )
 
@@ -654,6 +662,7 @@
       (add-hook 'python-mode-hook 'jedi:setup)
       (setq jedi:complete-on-dot t) ; automatically start completion after inserting a dot
       )
+
   #+END_SRC
 
 python-environment-directory

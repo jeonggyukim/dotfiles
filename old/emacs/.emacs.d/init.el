@@ -29,3 +29,5 @@
 (setq custom-file "~/.emacs.d/custom.el")
 (setq vc-follow-symlinks t)
 (org-babel-load-file (expand-file-name "~/.emacs.d/myinit.org"))
+(put 'upcase-region 'disabled nil)
+(put 'scroll-left 'disabled nil)
