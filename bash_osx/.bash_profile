@@ -75,22 +75,24 @@ source $HOME/.git-completion.bash
 source $HOME/.git-prompt.sh
 PS1='[\u@\h \W$(__git_ps1 " (%s)")]\$ '   # adjust this to your prompt liking
 
+############################################
+
+
 # For ipython notebook locale
 # Ref: http://stackoverflow.com/questions/15526996/ipython-notebook-locale-error
 export LC_ALL=en_US.UTF-8
 export LANG=en_US.UTF-8
 
 # pythonpath
-export PYTHONPATH=$PYTHONPATH:~/Dropbox/gmc/py/athpy_gmc
+export PYTHONPATH="$HOME/Dropbox/gmc/py/athpy:$HOME/Dropbox/gmc/py/athpy_gmc:$PYTHONPATH"
+export PYTHONPATH="$HOME/Dropbox/tigrad/py/tigradpy:$PYTHONPATH"
+export PYTHONSTARTUP="$HOME/.pythonrc.py"
 
 # bookmarks.sh script
 # Note that the use of bookmarks.sh script requires bash4.0+
 source ~/dotfiles/bookmarks/bookmarks.sh
 
-export CSCOPE_EDITOR=`which emacs`
-
-# added by Anaconda2 4.0.0 installer
-#export PATH="/Users/jgkim/anaconda/bin:$PATH"
+export CSCOPE_EDITOR=$(which emacs)
 
 ## idl setup
 #source ~/Applications/exelis/idl83/bin/idl_setup.bash
@@ -98,10 +100,29 @@ export CSCOPE_EDITOR=`which emacs`
 
 export MATPLOTLIB="/Users/jgkim/.matplotlib"
 
-# added by Anaconda2 4.0.0 installer
-export PATH="/Users/jgkim/anaconda/bin:$PATH"
-export PATH="/usr/local/bin:/Users/jgkim/bin:~/Dropbox/gmc/py/athpy_gmc/w1:$PATH"
+export PATH="/Users/jgkim/anaconda2/bin:$PATH"
+export PATH="/usr/local/bin:/Users/jgkim/bin:$HOME/Dropbox/gmc/py/athpy_gmc/w1:$PATH"
+
 # Add VisIt directory
-export PATH="/Applications/VisIt.app/Contents/Resources/bin:$PATH"
+export PATH="/Applications/ParaView-5.3.0-RC3.app/Contents/MacOS:/Applications/VisIt.app/Contents/Resources/bin:$PATH"
+
+# paraview lib, python path
+#export DYLD_LIBRARY_PATH="/Applications/ParaView-5.3.0-RC3.app/Contents/Libraries:$DYLD_LIBRARY_PATH"
+#export PYTHONPATH="/Applications/ParaView-5.2.0.app/Contents/Python/paraview:$PYTHONPATH"
+
+# SLUG
+#export CPLUS_INCLUDE_PATH="/usr/local/Cellar/boost/1.63.0:$CXX_INCLUDE_PATH"
+export CXX_INCLUDE_PATH="/usr/local/Cellar/boost/1.63.0:$CXX_INCLUDE_PATH"
+export C_INCLUDE_PATH="/usr/local/Cellar/gsl/2.3/include:$C_INCLUDE_PATH"
+#export DYLD_LIBRARY_PATH="/usr/local/Cellar/boost/1.63.0/lib:$DYLD_LIBRARY_PATH"
+#export DYLD_LIBRARY_PATH="/usr/local/Cellar/gsl/2.3/lib:$DYLD_LIBRARY_PATH"
+export SLUG_DIR="$HOME/Documents/slug2"
 
 alias mpirun="/usr/local/bin/mpirun"
+if which rbenv > /dev/null; then eval "$(rbenv init -)"; fi
+
+# added by glueconda installer
+#export PATH="/Users/jgkim/glueconda/bin:$PATH"
+
+
+export DESPOTIC_HOME="/Users/jgkim/Dropbox/despotic"

@@ -443,13 +443,13 @@
 * smartparen, auto-complete
 ** smartparen
 #+BEGIN_SRC emacs-lisp
-  (use-package smartparens
-    :diminish smartparens-mode
-    :init
-    (require 'smartparens-config)
-    (smartparens-global-mode)
-    (show-smartparens-global-mode)
-    )
+  ;; (use-package smartparens
+  ;;   :diminish smartparens-mode
+  ;;   :init
+  ;;   (require 'smartparens-config)
+  ;;   (smartparens-global-mode)
+  ;;   (show-smartparens-global-mode)
+  ;;   )
 #+END_SRC
 ** auto-complete
 #+BEGIN_SRC emacs-lisp
@@ -586,25 +586,25 @@
   #+END_SRC
 * agressive indent
   #+BEGIN_SRC emacs-lisp
-    (use-package aggressive-indent
-      ;; :disabled
-      :defer t
-      :init
-      ;; (add-hook 'emacs-lisp-mode-hook #'aggressive-indent-mode)
-      (add-hook 'css-mode-hook #'aggressive-indent-mode)
-      (add-hook 'c-mode-hook #'aggressive-indent-mode)
-      (add-hook 'c++-mode-hook #'aggressive-indent-mode)
-      ;; :config
-      ;; ;; don't exlclude python from excluded modes
-      ;; ;; (setq aggressive-indent-excluded-modes
-      ;; ;;   (remove 'python-mode aggressive-indent-excluded-modes))
-      ;; ;; )
-      ;; (add-to-list
-      ;;  'aggressive-indent-dont-indent-if
-      ;;  '(and (derived-mode-p 'c-mode)
-      ;;    (null (string-match "\\([;{}]\\|\\b\\(if\\|for\\|while\\)\\b\\)"
-      ;;     		       (thing-at-point 'line))))
-      )
+    ;; (use-package aggressive-indent
+    ;;   ;; :disabled
+    ;;   :defer t
+    ;;   :init
+    ;;   ;; (add-hook 'emacs-lisp-mode-hook #'aggressive-indent-mode)
+    ;;   ;; (add-hook 'css-mode-hook #'aggressive-indent-mode)
+    ;;   ;; (add-hook 'c-mode-hook #'aggressive-indent-mode)
+    ;;   ;; (add-hook 'c++-mode-hook #'aggressive-indent-mode)
+    ;;   ;; :config
+    ;;   ;; ;; don't exlclude python from excluded modes
+    ;;   ;; ;; (setq aggressive-indent-excluded-modes
+    ;;   ;; ;;   (remove 'python-mode aggressive-indent-excluded-modes))
+    ;;   ;; ;; )
+    ;;   ;; (add-to-list
+    ;;   ;;  'aggressive-indent-dont-indent-if
+    ;;   ;;  '(and (derived-mode-p 'c-mode)
+    ;;   ;;    (null (string-match "\\([;{}]\\|\\b\\(if\\|for\\|while\\)\\b\\)"
+    ;;   ;;     		       (thing-at-point 'line))))
+    ;;   )
       #+END_SRC
 * expand region
   #+BEGIN_SRC emacs-lisp
@@ -678,8 +678,8 @@ python-environment-directory
 
         ;; auto-fill-mode
         (add-hook 'LaTeX-mode-hook '(lambda nil
-  				    (setq fill-column 70)
-  				    (auto-fill-mode)))
+    				  (setq fill-column 70)
+    				  (auto-fill-mode)))
         (add-hook 'LaTeX-mode-hook 'turn-on-reftex)
         (setq reftex-plug-into-auctex t)
         (add-hook 'LaTeX-mode-hook 'LaTeX-math-mode)
@@ -689,26 +689,26 @@ python-environment-directory
         ;; (add-hook 'LaTeX-mode-hook 'flyspell-mode)
         ;; add ac-sources to default ac-sources
         (defun ac-LaTeX-mode-setup () 
-  	(setq ac-sources
-  	      (append '(ac-source-math-unicode
-  			ac-source-math-latex
-  			ac-source-latex-commands) ac-sources))
-  	)
+        (setq ac-sources
+    	    (append '(ac-source-math-unicode
+    		      ac-source-math-latex
+    		      ac-source-latex-commands) ac-sources))
+        )
         (add-hook 'LaTeX-mode-hook 'ac-LaTeX-mode-setup)
         (setq ac-math-unicode-in-math-p t)
-    
+
         (add-hook 'LaTeX-mode-hook
-  		(lambda () (local-set-key (kbd "<S-s-mouse-1>") #'TeX-view)))
+    	      (lambda () (local-set-key (kbd "<S-s-mouse-1>") #'TeX-view)))
         ;; Emacs + Synctex + Skim: How to correctly set up syncronization?
         ;; http://stackoverflow.com/questions/7899845/emacs-synctex-skim-how-to-correctly-set-up-syncronization-none-of-the-exi
         ;; Use Skim as viewer, enable source <-> PDF sync
         ;; make latexmk available via C-c C-c
         ;; Note: SyncTeX is setup via ~/.latexmkrc (see below)
         (add-hook 'LaTeX-mode-hook (lambda ()
-  				   (push
-  				    '("latexmk" "latexmk -pdf %s" TeX-run-TeX nil t
-  				      :help "Run latexmk on file")
-  				    TeX-command-list)))
+    				 (push
+    				  '("latexmk" "latexmk -pdf %s" TeX-run-TeX nil t
+    				    :help "Run latexmk on file")
+    				  TeX-command-list)))
         (add-hook 'LaTeX-mode-hook '(lambda () (setq TeX-command-default "latexmk")))
         ;; in ~/.latexmkrc
         ;; $pdflatex = 'pdflatex -interaction=nonstopmode -synctex=1 %O %S';
@@ -720,9 +720,9 @@ python-environment-directory
         ;; option -b highlights the current line; option -g opens Skim in the background
         (setq TeX-view-program-selection '((output-pdf "PDF Viewer")))
         (setq TeX-view-program-list
-  	    '(("PDF Viewer"
-  	       "/Applications/Skim.app/Contents/SharedSupport/displayline -b -g %n %o %b")))
-
+    	  '(("PDF Viewer"
+    	     "/Applications/Skim.app/Contents/SharedSupport/displayline -b -g %n %o %b")))
+        (server-start); start emacs in server mode so that skim can talk to it
         )
       )
 

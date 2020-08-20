@@ -5,7 +5,8 @@
 if [[ $(uname -s) == "Linux" ]]; then
     alias rm='gvfs-trash'
 elif [[ $(uname -s) == "Darwin" ]]; then
-    alias rm='trash'
+#    alias rm='trash'
+    alias rm='rm'
 fi
 
 alias cp='cp -i'
